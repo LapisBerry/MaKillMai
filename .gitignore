@@ -25,3 +25,4 @@ replay_pid*
 
 # temp file for Microsoft Office Word
 ~$*.docx
+~*.tmp
