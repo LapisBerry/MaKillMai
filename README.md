@@ -1,8 +1,15 @@
-# MaKillMai
-Game Project
+# MaKillMai 🔥
+Hi Hi Hi 👋
 
-Turn Based, Dice, Board game (Bang! alike)
+## About this repository 😄
+This is game project repository and the name of this game is _"MaKillMai"_
 
-I do it for fun though... In Java!
+## Game design 📖
+Turn Based, Dice, Board game (Bang! alike).
 
-Check out GameDesign.pdf
+For more information check out GameDesign.pdf
+
+### Message from @LapisBerry 📝
+I do it for fun though... In Java! 🙃
+
+"It would be fun if you wanna help me finish this game." - @LapisBerry 😍
