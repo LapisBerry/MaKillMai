@@ -7,6 +7,9 @@ public class Configurations {
     public static final int baseStartingRotPower = 0;
     public static final int baseRequiredForPureMagic = 3;
 
+    // Dice
+    public static final int dicePool = 5;
+    
     // Whole game
     public static final int rotPool = 9;
 }
