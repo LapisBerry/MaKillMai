@@ -18,6 +18,14 @@ public class BaseCharacter {
         setSumStoneSuppressor(0);
     }
 
+    public BaseCharacter(int hp, int maxHp, int rotPower, int requiredForPureMagic, int sumStoneSuppressor) {
+        setMaxHp(maxHp);
+        setHp(hp);
+        setRotPower(rotPower);
+        setRequiredForPureMagic(requiredForPureMagic);
+        setSumStoneSuppressor(sumStoneSuppressor);
+    }
+
 
     // Dice Methods
     public void useAttack1(BaseCharacter anotherBaseCharacter) {
