@@ -1,12 +1,8 @@
 # MaKillMai
-I wanna make a game.
+Game Project
 
-It's called "MaKillMai"
+Turn Based, Dice, Board game (Bang! alike)
 
-It will be card game.
+I do it for fun though... In Java!
 
-It will be multiplayer.
-
-FOR NOW THE STATE OF GAME RIGHT NOW IS DESIGNING
-
-Check out GameDesign.pdf for more informations!
+Check out GameDesign.pdf
