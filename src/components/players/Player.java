@@ -6,18 +6,20 @@ public class Player {
     // Fields
     private String name;
     private BaseCharacter character;
-    
+    private Role role;
+
 
     // Constructors
-    public Player() {
-        setName("");
-        setCharacter(new BaseCharacter());
-    }
-
-    public Player(String name, BaseCharacter character) {
+    public Player(String name, BaseCharacter character, Role role) {
         setName(name);
         setCharacter(character);
+        setRole(role);
+        if (role == Role.EMPEROR) {
+            character.setMaxHp(character.getMaxHp() + 1);
+            character.setHp(character.getHp() + 1);
+        }
     }
+
 
     // Getter Setter
     public String getName() {
@@ -34,5 +36,13 @@ public class Player {
 
     public void setCharacter(BaseCharacter character) {
         this.character = character;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 }
