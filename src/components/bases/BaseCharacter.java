@@ -4,6 +4,7 @@ import components.dices.DicePool;
 
 public class BaseCharacter {
     // Fields
+    private String name;
     private int hp;
     private int maxHp;
     private int rotPower;
@@ -14,6 +15,7 @@ public class BaseCharacter {
 
     // Constructor
     public BaseCharacter() {
+        setName("Dummy");
         setMaxHp(4);
         setHp(4);
         setRotPower(0);
@@ -22,7 +24,8 @@ public class BaseCharacter {
         dicePool = new DicePool();
     }
 
-    public BaseCharacter(int hp, int maxHp, int rotPower, int requiredForPureMagic, int sumStoneSuppressor) {
+    public BaseCharacter(String name, int hp, int maxHp, int rotPower, int requiredForPureMagic, int sumStoneSuppressor) {
+        setName(name);
         setMaxHp(maxHp);
         setHp(hp);
         setRotPower(rotPower);
@@ -73,6 +76,14 @@ public class BaseCharacter {
 
 
     // Getter Setter
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public int getHp() {
         return hp;
     }
@@ -116,5 +127,9 @@ public class BaseCharacter {
 
     public DicePool getDicePool() {
         return dicePool;
+    }
+
+    public void setDicePool(DicePool dicePool) {
+        this.dicePool = dicePool;
     }
 }
