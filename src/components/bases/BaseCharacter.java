@@ -1,5 +1,7 @@
 package components.bases;
 
+import components.dices.DicePool;
+
 public class BaseCharacter {
     // Fields
     private int hp;
@@ -7,6 +9,7 @@ public class BaseCharacter {
     private int rotPower;
     private int requiredForPureMagic;
     private int sumStoneSuppressor;
+    private DicePool dicePool;
     
 
     // Constructor
@@ -16,6 +19,7 @@ public class BaseCharacter {
         setRotPower(0);
         setRequiredForPureMagic(3);
         setSumStoneSuppressor(0);
+        dicePool = new DicePool();
     }
 
     public BaseCharacter(int hp, int maxHp, int rotPower, int requiredForPureMagic, int sumStoneSuppressor) {
@@ -24,6 +28,7 @@ public class BaseCharacter {
         setRotPower(rotPower);
         setRequiredForPureMagic(requiredForPureMagic);
         setSumStoneSuppressor(sumStoneSuppressor);
+        dicePool = new DicePool();
     }
 
 
@@ -107,5 +112,9 @@ public class BaseCharacter {
 
     public void setSumStoneSuppressor(int sumStoneSuppressor) {
         this.sumStoneSuppressor = Math.max(0, sumStoneSuppressor);
+    }
+
+    public DicePool getDicePool() {
+        return dicePool;
     }
 }
