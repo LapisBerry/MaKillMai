@@ -1,4 +1,4 @@
-package config.enums;
+package components.dices;
 
 public enum DiceFace {
     ATTACK_1,

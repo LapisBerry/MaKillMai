@@ -2,8 +2,6 @@ package components.dices;
 
 import java.util.Random;
 
-import config.enums.DiceFace;
-
 public class Dice {
     // Fields
     private DiceFace diceFace;
