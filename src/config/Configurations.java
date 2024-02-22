@@ -1,6 +1,6 @@
 package config;
 
-public class Configurations {
+public final class Configurations {
     // Character
     public static final int baseAttackDamage = 1;
     public static final int baseStartingHealth = 4;
