@@ -5,7 +5,7 @@ Hi Hi Hi 👋
 This is game project repository and the name of this game is _"MaKillMai"_
 
 ## Game design 📖
-Turn Based, Dice, Board game (Bang! alike).
+Turn Based, Dice, Board game (Bang! lookalike).
 
 For more information check out GameDesign.pdf
 
