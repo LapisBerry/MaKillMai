@@ -11,7 +11,7 @@ public class BaseCharacter {
     private int requiredForPureMagic;
     private int sumStoneSuppressor;
     private DicePool dicePool;
-    
+
 
     // Constructor
     public BaseCharacter() {
