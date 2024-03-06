@@ -1,9 +1,19 @@
 package components.dices;
 
+import java.util.Arrays;
+
+/**
+ * The {@code DicePool} class
+ * <p>This class implements dice pool.
+ * <p>Q: What is dice pool?
+ * <p>A: Every player will have 5 dice. Dice pool is like a plate for those 5 dices!
+ * <p>You can roll all dices in the pool.
+ * @author LapisBerry
+ */
 public class DicePool {
     // Fields
     private Dice[] dicePool; // "Wanna use ArrayList<> instead?" - @LapisBerry
-    private boolean[] isDiceLockedAt;
+    private final boolean[] isDiceLockedAt;
 
     
     // Constructors
@@ -23,9 +33,7 @@ public class DicePool {
     }
 
     public void unlockAllDices() {
-        for (int i = 0; i < isDiceLockedAt.length; ++i) {
-            isDiceLockedAt[i] = false;
-        }
+        Arrays.fill(isDiceLockedAt, false);
     }
 
     public void unlockDiceAt(int index) {

@@ -4,6 +4,12 @@ import java.util.ArrayList;
 
 import components.players.Player;
 
+/**
+ * The {@code Board} class
+ * <p>
+ * This class can tell who is in the board, where are they and the distance between those players.
+ * @author LapisBerry
+ */
 public class Board {
     // Fields
     private ArrayList<Player> circleOfPlayers;

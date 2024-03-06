@@ -1,2 +1,2 @@
 # characters
-This folder will contain other character that will extends from class BaseCharacter
+This folder will contain other character that will extend from class BaseCharacter

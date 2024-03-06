@@ -2,6 +2,12 @@ package components.dices;
 
 import java.util.Random;
 
+/**
+ * The {@code Dice} class
+ * <p>
+ * This class can roll dice and show what is the diceFace of the dice.
+ * @author LapisBerry
+ */
 public class Dice {
     // Fields
     private DiceFace diceFace;
