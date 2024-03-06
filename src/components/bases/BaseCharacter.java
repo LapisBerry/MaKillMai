@@ -2,6 +2,14 @@ package components.bases;
 
 import components.dices.DicePool;
 
+/**
+ * The {@code BaseCharacter} class
+ * <p>
+ * This class is the base for character.
+ * <p>
+ * When we make a character class, that character class will extend this class.
+ * @author LapisBerry
+ */
 public class BaseCharacter {
     // Fields
     private String name;
