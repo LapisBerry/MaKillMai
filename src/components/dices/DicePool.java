@@ -27,7 +27,7 @@ public class DicePool {
     public void rollAllUnlockedDices() {
         for (int i = 0; i < dicePool.length; ++i) {
             if (!isDiceLockedAt[i]) {
-                dicePool[i].rollDice();
+                dicePool[i].roll();
             }
         }
     }
