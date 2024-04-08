@@ -1,5 +1,5 @@
 # MaKillMai 🔥
-Hi Hi Hi 👋
+Turn based board game 4-10 persons
 
 ## About this repository 😄
 This is game project repository and the name of this game is _"MaKillMai"_
