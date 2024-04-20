@@ -12,7 +12,7 @@ import java.util.Arrays;
  */
 public class DicePool {
     // Fields
-    private Dice[] dicePool; // "Wanna use ArrayList<> instead?" - @LapisBerry
+    private final Dice[] dicePool;
     private final boolean[] isDiceLockedAt;
 
     
@@ -51,9 +51,5 @@ public class DicePool {
     // Getter Setter
     public Dice[] getDicePool() {
         return dicePool;
-    }
-
-    public void setDicePool(Dice[] dicePool) {
-        this.dicePool = dicePool;
     }
 }
