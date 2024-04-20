@@ -8,16 +8,18 @@ import components.players.Player;
  * The {@code Board} class
  * <p>
  * This class can tell who is in the board, where are they and the distance between those players.
+ *
  * @author LapisBerry
  */
 public class Board {
     // Fields
-    private ArrayList<Player> circleOfPlayers;
+    private final ArrayList<Player> circleOfPlayers;
 
 
     // Constructors
-    public Board() {
+    public Board(ArrayList<Player> circleOfPlayers) {
         // TODO: implement constructor
+        this.circleOfPlayers = circleOfPlayers;
     }
 
     // Methods
@@ -25,22 +27,36 @@ public class Board {
         return circleOfPlayers.indexOf(player);
     }
 
-    public void setCircleOfPlayers(ArrayList<Player> circleOfPlayers) {
-        this.circleOfPlayers = circleOfPlayers;
-    }
-
+    /**
+     * This method returns the distance between two players.
+     * <p>
+     * It calculates the "SHORTEST" distance between two players in the circle of players.
+     *
+     * @param player1 any player in the board
+     * @param player2 any player in the board
+     * @return the shortest distance between two players, or -1 if any of the player is not in the board.
+     */
     public int distanceBetween(Player player1, Player player2) {
-        int indexOfPlayer1 = circleOfPlayers.indexOf(player1);
-        int indexOfPlayer2 = circleOfPlayers.indexOf(player2);
-        
-        int maxMinuxMin = Math.max(indexOfPlayer1, indexOfPlayer2) - Math.min(indexOfPlayer1, indexOfPlayer2);
+        final int indexOfPlayer1 = circleOfPlayers.indexOf(player1);
+        final int indexOfPlayer2 = circleOfPlayers.indexOf(player2);
 
-        if (!(maxMinuxMin <= circleOfPlayers.size() / 2)) {
-            return circleOfPlayers.size() - maxMinuxMin;
-        }
-        return maxMinuxMin;
+        if (indexOfPlayer1 == -1 || indexOfPlayer2 == -1) return -1;
+
+        final int maxMinusMin = Math.max(indexOfPlayer1, indexOfPlayer2) - Math.min(indexOfPlayer1, indexOfPlayer2);
+
+        return (maxMinusMin > circleOfPlayers.size() / 2) ? circleOfPlayers.size() - maxMinusMin : maxMinusMin;
     }
-    
+
+    public boolean add(Player player) {
+        return circleOfPlayers.add(player);
+    }
+
+    public boolean remove(Player player) {
+        return circleOfPlayers.remove(player);
+    }
+
+
+    // Getters Setters
     public ArrayList<Player> getCircleOfPlayers() {
         return circleOfPlayers;
     }

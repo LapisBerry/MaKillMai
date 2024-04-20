@@ -8,6 +8,7 @@ import components.dices.DicePool;
  * This class is the base for character.
  * <p>
  * When we make a character class, that character class will extend this class.
+ *
  * @author LapisBerry
  */
 public class BaseCharacter {
@@ -16,29 +17,26 @@ public class BaseCharacter {
     private int hp;
     private int maxHp;
     private int rotPower;
-    private int requiredForPureMagic;
-    private int sumStoneSuppressor;
-    private DicePool dicePool;
+    private String abilityDescription;
+    private final DicePool dicePool;
 
 
     // Constructor
     public BaseCharacter() {
         setName("Dummy");
-        setMaxHp(4);
-        setHp(4);
+        setMaxHp(10);
+        setHp(10);
         setRotPower(0);
-        setRequiredForPureMagic(3);
-        setSumStoneSuppressor(0);
         dicePool = new DicePool();
+        abilityDescription = "This is a dummy character.";
     }
 
-    public BaseCharacter(String name, int hp, int maxHp, int rotPower, int requiredForPureMagic, int sumStoneSuppressor) {
+    public BaseCharacter(final String name, final int maxHp, final int hp, final int rotPower, final String abilityDescription) {
         setName(name);
         setMaxHp(maxHp);
         setHp(hp);
         setRotPower(rotPower);
-        setRequiredForPureMagic(requiredForPureMagic);
-        setSumStoneSuppressor(sumStoneSuppressor);
+        setAbilityDescription(abilityDescription);
         dicePool = new DicePool();
     }
 
@@ -67,7 +65,7 @@ public class BaseCharacter {
 
     // When character rolls and get those dice faces, call these functions, what will happen to them
     public void rollsIntoAttack1() {/*blank*/}
-    
+
     public void rollsIntoAttack2() {/*blank*/}
 
     public void rollsIntoHealthPotion() {/*blank*/}
@@ -106,7 +104,7 @@ public class BaseCharacter {
     }
 
     public void setMaxHp(int maxHp) {
-        this.maxHp = maxHp;
+        this.maxHp = Math.max(1, maxHp);
     }
 
     public int getRotPower() {
@@ -117,27 +115,15 @@ public class BaseCharacter {
         this.rotPower = rotPower;
     }
 
-    public int getRequiredForPureMagic() {
-        return requiredForPureMagic;
+    public String getAbilityDescription() {
+        return abilityDescription;
     }
 
-    public void setRequiredForPureMagic(int requiredForPureMagic) {
-        this.requiredForPureMagic = Math.max(0, requiredForPureMagic);
-    }
-
-    public int getSumStoneSuppressor() {
-        return sumStoneSuppressor;
-    }
-
-    public void setSumStoneSuppressor(int sumStoneSuppressor) {
-        this.sumStoneSuppressor = Math.max(0, sumStoneSuppressor);
+    public void setAbilityDescription(String abilityDescription) {
+        this.abilityDescription = abilityDescription;
     }
 
     public DicePool getDicePool() {
         return dicePool;
-    }
-
-    public void setDicePool(DicePool dicePool) {
-        this.dicePool = dicePool;
     }
 }
