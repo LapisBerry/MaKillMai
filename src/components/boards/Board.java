@@ -18,7 +18,6 @@ public class Board {
 
     // Constructors
     public Board(ArrayList<Player> circleOfPlayers) {
-        // TODO: implement constructor
         this.circleOfPlayers = circleOfPlayers;
     }
 
@@ -53,6 +52,10 @@ public class Board {
 
     public boolean remove(Player player) {
         return circleOfPlayers.remove(player);
+    }
+
+    public int size() {
+        return circleOfPlayers.size();
     }
 
 
