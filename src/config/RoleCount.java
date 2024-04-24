@@ -10,38 +10,25 @@ package config;
  * @author LapisBerry
  */
 public final class RoleCount {
-    // Fields
-    private static final int emperor = 1;
-    private static int royalist;
-    private static int rebel;
-    private static int spy;
-
-    // Methods
-    public static void updateRoleCount(final int players) {
-        if (4 <= players && players <= 10) {
-            spy = TABLE[players - 4][0];
-            rebel = TABLE[players - 4][1];
-            royalist = TABLE[players - 4][2];
-        } else {
-            System.out.println("Available players are 4 - 10 players");
-            throw new RuntimeException("Available players are 4 - 10 players");
-        }
+    public static int getEmperors() {
+        return 1;
+    }
+    public static int getRoyalists(int players) {
+        if (players < 4 || players > 10)
+            throw new IllegalArgumentException("Invalid player count: " + players + " players must be between 4 and 10. (inclusive)");
+        return TABLE[players - 4][2];
     }
 
-    // Getter
-    public static int getEmperor() {
-        return emperor;
-    }
-    public static int getRoyalist() {
-        return royalist;
+    public static int getRebels(int players) {
+        if (players < 4 || players > 10)
+            throw new IllegalArgumentException("Invalid player count: " + players + " players must be between 4 and 10. (inclusive)");
+        return TABLE[players - 4][1];
     }
 
-    public static int getRebel() {
-        return rebel;
-    }
-
-    public static int getSpy() {
-        return spy;
+    public static int getSpies(int players) {
+        if (players < 4 || players > 10)
+            throw new IllegalArgumentException("Invalid player count: " + players + " players must be between 4 and 10. (inclusive)");
+        return TABLE[players - 4][0];
     }
 
     // Array of role count
