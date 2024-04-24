@@ -1,11 +1,12 @@
 package components.bases;
 
 import components.dices.DicePool;
+import components.players.Player;
 
 /**
  * The {@code BaseCharacter} class
  * <p>
- * This class is the base for character.
+ * This class is the base for character. When {@code BaseCharacter} interacts with something include another {@code BaseCharacter}, another {@code BaseCharacter} will be the one who resolve the interaction.
  * <p>
  * When we make a character class, that character class will extend this class.
  *
@@ -62,6 +63,24 @@ public class BaseCharacter {
 
     public void useStoneSuppressor() {/*blank*/}
 
+    // getSomething from anotherBaseCharacter
+    public void takeAttack1From(BaseCharacter anotherBaseCharacter) {
+        // TODO
+    }
+
+    public void takeAttack2From(BaseCharacter anotherBaseCharacter) {
+        // TODO
+    }
+
+    public void takeHealthPotionFrom(BaseCharacter anotherBaseCharacter) {
+        // TODO
+    }
+
+    public void takeRotPowerFrom(BaseCharacter anotherBaseCharacter) {/*blank*/}
+
+    public void takePureMagicFrom(BaseCharacter anotherBaseCharacter, int amount) {
+        // TODO
+    }
 
     // When character rolls and get those dice faces, call these functions, what will happen to them
     public void rollsIntoAttack1() {/*blank*/}
@@ -77,6 +96,15 @@ public class BaseCharacter {
     public void rollsIntoPureMagic() {/*blank*/}
 
     public void rollsIntoStoneSuppressor() {
+        // TODO
+    }
+
+    // getSomething from game system
+    public void takeDynamiteDamage() {
+        // TODO
+    }
+
+    public void takeRotPowerDamage() {
         // TODO
     }
 

@@ -4,6 +4,7 @@ import components.bases.BaseCharacter;
 import components.boards.Board;
 import components.players.Player;
 import components.players.Role;
+import components.rotpool.RotPool;
 
 import java.util.ArrayList;
 
@@ -11,6 +12,7 @@ public class GameController {
     // Field
     private static GameController instance = null; // Instance
     private Board board;
+    private RotPool rotPool;
 
     // Constructor
     private GameController() {
@@ -27,6 +29,7 @@ public class GameController {
         mockPlayers.add(new Player("Player S", new BaseCharacter(), Role.SPY));
         // TODO: mockPlayers
         board = new Board(mockPlayers);
+        rotPool = new RotPool();
     }
 
 
@@ -70,5 +73,9 @@ public class GameController {
             instance = new GameController();
         }
         return instance;
+    }
+
+    public Board getBoard() {
+        return board;
     }
 }
