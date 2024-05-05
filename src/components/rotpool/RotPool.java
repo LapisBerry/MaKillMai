@@ -15,11 +15,10 @@ public class RotPool {
     }
 
     // Methods
-    public void giveARotPower(BaseCharacter baseCharacter) {
+    public void giveOneRotPower(BaseCharacter baseCharacter) {
         rotPower--;
         baseCharacter.setRotPower(baseCharacter.getRotPower() + 1);
-        if (rotPower <= 0)
-            resetRotPower();
+        if (rotPower <= 0) resetRotPower();
     }
 
     public void resetRotPower() {
