@@ -12,6 +12,8 @@ For more information check out `GameDesign.pdf`
 ## Contribution 📝
 I implement this game in Java, I might use [JavaFX][JavaFX-url] or [libGDX][libGDX-url] TBA
 
+I use [JavaFX][JavaFX-url] right now.
+
 "It would be fun if you wanna help me finish this game." - @LapisBerry 😍
 
 [JavaFX-url]:https://openjfx.io/

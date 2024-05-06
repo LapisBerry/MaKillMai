@@ -7,7 +7,7 @@ import java.util.Arrays;
  * <p>This class implements dice pool.
  * <p>Q: What is dice pool?
  * <p>A: Every player will have 5 dice. Dice pool is like a plate for those 5 dices!
- * <p>You can roll all dices in the pool.
+ * <p>You can roll all dices in the pool. You can lock the specific dice. You can unlock the specific dice.
  * @author LapisBerry
  */
 public class DicePool {
