@@ -14,6 +14,7 @@ public class GameController {
     private Board board;
     private RotPool rotPool;
 
+
     // Constructor
     private GameController() {
         initGame();
@@ -77,5 +78,9 @@ public class GameController {
 
     public Board getBoard() {
         return board;
+    }
+
+    public RotPool getRotPool() {
+        return rotPool;
     }
 }

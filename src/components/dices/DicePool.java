@@ -12,22 +12,22 @@ import java.util.Arrays;
  */
 public class DicePool {
     // Fields
-    private final Dice[] dicePool;
+    private final Dice[] diceArray;
     private final boolean[] isDiceLockedAt;
 
     
     // Constructors
     public DicePool() {
-        dicePool = new Dice[]{new Dice(), new Dice(), new Dice(), new Dice(), new Dice()};
+        diceArray = new Dice[]{new Dice(), new Dice(), new Dice(), new Dice(), new Dice()};
         isDiceLockedAt = new boolean[]{false, false, false, false, false};
     }
 
 
     // Methods
     public void rollAllUnlockedDices() {
-        for (int i = 0; i < dicePool.length; ++i) {
+        for (int i = 0; i < diceArray.length; ++i) {
             if (!isDiceLockedAt[i]) {
-                dicePool[i].roll();
+                diceArray[i].roll();
             }
         }
     }
@@ -37,19 +37,20 @@ public class DicePool {
     }
 
     public void unlockDiceAt(int index) {
-        if (0 <= index && index < dicePool.length) {
+        if (0 <= index && index < diceArray.length) {
             isDiceLockedAt[index] = false;
         }
     }
 
     public void lockDiceAt(int index) {
-        if (0 <= index && index < dicePool.length) {
+        if (0 <= index && index < diceArray.length) {
             isDiceLockedAt[index] = true;
         }
     }
 
+
     // Getter Setter
-    public Dice[] getDicePool() {
-        return dicePool;
+    public Dice[] getDiceArray() {
+        return diceArray;
     }
 }
