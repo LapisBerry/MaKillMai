@@ -8,6 +8,13 @@ import components.rotpool.RotPool;
 
 import java.util.ArrayList;
 
+/**
+ * The {@code GameController} class keep the game instance.
+ * <p>
+ *     It has a board and a rotPool.
+ * <p>
+ *     It has methods to remove a player, check if the game is over, end the game, and count the number of players with a certain role.
+ */
 public class GameController {
     // Field
     private static GameController instance = null; // Instance
