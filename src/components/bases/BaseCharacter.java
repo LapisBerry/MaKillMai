@@ -88,6 +88,21 @@ public class BaseCharacter {
     }
 
     // When character rolls and get those dice faces, call these functions, what will happen to them
+    public void resolveRolledDice() {
+        for (int i = 0; i < getDicePool().getDiceArray().length; ++i) {
+            switch (getDicePool().getDiceArray()[i].getDiceFace()) {
+                case ATTACK_1 -> rollsIntoAttack1(i);
+                case ATTACK_2 -> rollsIntoAttack2(i);
+                case HEALTH_POTION -> rollsIntoHealthPotion(i);
+                case ROT_POWER -> rollsIntoRotPower(i);
+                case PURE_MAGIC -> rollsIntoPureMagic(i);
+                case STONE_SUPPRESSOR -> rollsIntoStoneSuppressor(i);
+                default -> {
+                }
+            }
+        }
+    }
+
     public void rollsIntoAttack1(int indexOfDice) {/*blank*/}
 
     public void rollsIntoAttack2(int indexOfDice) {/*blank*/}
@@ -113,6 +128,13 @@ public class BaseCharacter {
     public void takeRotPowerDamage() {
         // take damage equal to rot power
         setHp(getHp() - getRotPower());
+    }
+
+    // start, end of turn
+    public void startOfTurn() {
+    }
+
+    public void endOfTurn() {
     }
 
 
