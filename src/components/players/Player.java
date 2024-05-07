@@ -36,6 +36,8 @@ public class Player {
 
     public void setCharacter(BaseCharacter character) {
         this.character = character;
+        // automatically set the owner of the character to this player
+        this.character.setOwner(this);
     }
 
     public Role getRole() {

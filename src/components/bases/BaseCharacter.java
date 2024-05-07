@@ -1,6 +1,9 @@
 package components.bases;
 
+import components.dices.DiceFace;
 import components.dices.DicePool;
+import components.players.Player;
+import config.CONFIG;
 import controller.GameController;
 
 /**
@@ -20,14 +23,15 @@ public class BaseCharacter {
     private int rotPower;
     private String abilityDescription;
     private final DicePool dicePool;
+    private Player owner; // this will automatically be set when the character is assigned to a player
 
 
     // Constructor
     public BaseCharacter() {
         setName("Dummy");
-        setMaxHp(10);
-        setHp(10);
-        setRotPower(0);
+        setMaxHp(CONFIG.BASE_STARTING_HEALTH);
+        setHp(CONFIG.BASE_STARTING_HEALTH);
+        setRotPower(CONFIG.BASE_STARTING_ROT_POWER);
         dicePool = new DicePool();
         abilityDescription = "This is a dummy character.";
     }
@@ -110,13 +114,28 @@ public class BaseCharacter {
     public void rollsIntoHealthPotion(int indexOfDice) {/*blank*/}
 
     public void rollsIntoRotPower(int indexOfDice) {
+        // say to rot pool that this character get 1 rot power
         GameController.getInstance().getRotPool().giveOneRotPower(this);
     }
 
     public void rollsIntoPureMagic(int indexOfDice) {/*blank*/}
 
     public void rollsIntoStoneSuppressor(int indexOfDice) {
+        // lock the dice
         getDicePool().lockDiceAt(indexOfDice);
+        // make the dice unable to be unlocked
+        getDicePool().makeDiceUnableToBeUnlockedAt(indexOfDice);
+    }
+
+    // utility
+    private int countDiceFace(DiceFace diceFace) {
+        int count = 0;
+        for (int i = 0; i < getDicePool().getDiceArray().length; ++i) {
+            if (getDicePool().getDiceArray()[i].getDiceFace() == diceFace) {
+                ++count;
+            }
+        }
+        return count;
     }
 
     // getSomething from game system
@@ -132,9 +151,42 @@ public class BaseCharacter {
 
     // start, end of turn
     public void startOfTurn() {
+        // clear all dice
+        getDicePool().makeAllDiceUnlockable();
+        getDicePool().unlockAllDices();
     }
 
     public void endOfTurn() {
+    }
+
+    // is able to use something
+    public boolean isAbleToUseAttack1On(Player player) {
+        return GameController.getInstance().getBoard().distanceBetween(owner, player) == 1;
+    }
+
+    public boolean isAbleToUseAttack2On(Player player) {
+        if (GameController.getInstance().getBoard().getCircleOfPlayers().size() <= 3) return isAbleToUseAttack1On(player);
+        return GameController.getInstance().getBoard().distanceBetween(owner, player) == 2;
+    }
+
+    public boolean isAbleToUseHealthPotionOn(Player player) {
+        // normally you can use health potion on anyone
+        return true;
+    }
+
+    public boolean isAbleToUseRotPower() {
+        // normally you cannot use rot power
+        return false;
+    }
+
+    public boolean isAbleToUsePureMagic() {
+        // to use pure magic you have to have at least 3 pure magic dice
+        return countDiceFace(DiceFace.PURE_MAGIC) >= CONFIG.BASE_REQUIRED_FOR_PURE_MAGIC;
+    }
+
+    public boolean isAbleToUseStoneSuppressor() {
+        // normally you cannot use stone suppressor
+        return false;
     }
 
 
@@ -182,5 +234,13 @@ public class BaseCharacter {
 
     public DicePool getDicePool() {
         return dicePool;
+    }
+
+    public Player getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Player owner) {
+        this.owner = owner;
     }
 }
