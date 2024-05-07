@@ -2,7 +2,7 @@
 Turn based board game 4-10 persons
 
 ## About 😄
-This game is called_"MaKillMai"_
+This game is called _"MaKillMai"_
 
 ## Game design 📖
 Turn Based, Dice, Board game (Bang! lookalike).
