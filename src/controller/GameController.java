@@ -1,6 +1,5 @@
 package controller;
 
-import components.bases.BaseCharacter;
 import components.boards.Board;
 import components.players.Player;
 import components.players.Role;
