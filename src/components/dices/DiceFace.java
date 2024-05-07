@@ -1,5 +1,10 @@
 package components.dices;
 
+/**
+ * The {@code DiceFace} enum
+ * <p>
+ *     This enum represents the face of a die.
+ */
 public enum DiceFace {
     ATTACK_1,
     ATTACK_2,

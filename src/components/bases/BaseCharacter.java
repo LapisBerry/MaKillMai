@@ -33,7 +33,7 @@ public class BaseCharacter {
         setHp(CONFIG.BASE_STARTING_HEALTH);
         setRotPower(CONFIG.BASE_STARTING_ROT_POWER);
         dicePool = new DicePool();
-        abilityDescription = "This is a dummy character.";
+        setAbilityDescription("This is a dummy character.");
     }
 
     public BaseCharacter(final String name, final int maxHp, final int hp, final int rotPower, final String abilityDescription) {
@@ -161,12 +161,12 @@ public class BaseCharacter {
 
     // is able to use something
     public boolean isAbleToUseAttack1On(Player player) {
-        return GameController.getInstance().getBoard().distanceBetween(owner, player) == 1;
+        return GameController.getInstance().getBoard().distanceBetween(getOwner(), player) == 1;
     }
 
     public boolean isAbleToUseAttack2On(Player player) {
         if (GameController.getInstance().getBoard().getCircleOfPlayers().size() <= 3) return isAbleToUseAttack1On(player);
-        return GameController.getInstance().getBoard().distanceBetween(owner, player) == 2;
+        return GameController.getInstance().getBoard().distanceBetween(getOwner(), player) == 2;
     }
 
     public boolean isAbleToUseHealthPotionOn(Player player) {
