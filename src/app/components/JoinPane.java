@@ -63,6 +63,12 @@ public class JoinPane extends StackPane {
             setOnMouseExited(e -> {
                 setBackground(new Background(new BackgroundFill(Color.valueOf("00C2FF"), new CornerRadii(40), null)));
             });
+            setOnMousePressed(e -> {
+                setBackground(new Background(new BackgroundFill(Color.valueOf("0089A9"), new CornerRadii(40), null)));
+            });
+            setOnMouseReleased(e -> {
+                setBackground(new Background(new BackgroundFill(Color.valueOf("00C2FF"), new CornerRadii(40), null)));
+            });
         }
     }
 }

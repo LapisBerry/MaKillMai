@@ -2,7 +2,7 @@ package components.players;
 
 public enum Role {
     EMPEROR,
-    ROYALTY,
+    ROYALIST,
     REBEL,
     SPY
 }

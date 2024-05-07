@@ -24,19 +24,11 @@ public class GameController {
 
     // Constructor
     private GameController() {
-        initGame();
+        initGame(LobbyController.getInstance().getReadyPlayers());
     }
 
-    private void initGame() {
-        // TODO: mockPlayers
-        ArrayList<Player> mockPlayers = new ArrayList<>();
-        mockPlayers.add(new Player("Player E", new BaseCharacter(), Role.EMPEROR));
-        mockPlayers.add(new Player("Player B", new BaseCharacter(), Role.REBEL));
-        mockPlayers.add(new Player("Player B", new BaseCharacter(), Role.REBEL));
-        mockPlayers.add(new Player("Player G", new BaseCharacter(), Role.ROYALTY));
-        mockPlayers.add(new Player("Player S", new BaseCharacter(), Role.SPY));
-        // TODO: mockPlayers
-        board = new Board(mockPlayers);
+    private void initGame(ArrayList<Player> players) {
+        board = new Board(players);
         rotPool = new RotPool();
     }
 
@@ -66,8 +58,8 @@ public class GameController {
         return (int)board.getCircleOfPlayers().stream().filter(player -> player.getRole() == Role.REBEL).count();
     }
 
-    public int royaltyCount() {
-        return (int)board.getCircleOfPlayers().stream().filter(player -> player.getRole() == Role.ROYALTY).count();
+    public int royalistCount() {
+        return (int)board.getCircleOfPlayers().stream().filter(player -> player.getRole() == Role.ROYALIST).count();
     }
 
     public int spyCount() {

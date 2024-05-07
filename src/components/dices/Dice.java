@@ -1,8 +1,6 @@
 package components.dices;
 
-import interfaces.Rollable;
-
-import java.util.Random;
+import utils.Randomizer;
 
 /**
  * The {@code Dice} class
@@ -10,7 +8,7 @@ import java.util.Random;
  * This class can roll dice and show what is the diceFace of the dice.
  * @author LapisBerry
  */
-public class Dice implements Rollable {
+public class Dice {
     // Fields
     private DiceFace diceFace;
 
@@ -27,8 +25,7 @@ public class Dice implements Rollable {
 
     // Methods
     public void roll() {
-        Random rand = new Random();
-        int index = rand.nextInt(6);
+        int index = Randomizer.getRandomInt(6);
         diceFace = DiceFace.values()[index];
     }
 
