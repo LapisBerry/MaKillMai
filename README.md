@@ -1,5 +1,5 @@
 # MaKillMai 🔥
-Turn based board game 4-10 persons
+Online turn based board game 4-10 persons (Bang! lookalike)
 
 ## About 😄
 This game is called _"MaKillMai"_
@@ -10,9 +10,9 @@ Turn Based, Dice, Board game (Bang! lookalike).
 For more information check out `GameDesign.pdf`
 
 ## Contribution 📝
-I implement this game in Java, I might use [JavaFX][JavaFX-url] or [libGDX][libGDX-url] TBA
+I use [JavaFX][JavaFX-url] because I learn that from school. I don't have the plan to change to [libGDX][libGDX-url] and probably will never change it.
 
-I use [JavaFX][JavaFX-url] right now.
+I made this game because I want to learn about server socket and Server-Client Architecture.
 
 "It would be fun if you wanna help me finish this game." - @LapisBerry 😍
 
