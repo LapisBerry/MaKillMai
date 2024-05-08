@@ -23,12 +23,16 @@ public class GameController {
 
     // Constructor
     private GameController() {
+        // get readyPlayers from LobbyController instance
         initGame(LobbyController.getInstance().getReadyPlayers());
     }
 
     private void initGame(ArrayList<Player> players) {
         board = new Board(players);
         rotPool = new RotPool();
+
+        // give one maxHp to The Emperor
+        board.getCircleOfPlayers().stream().filter(player -> player.getRole() == Role.EMPEROR).forEach(player -> player.getCharacter().setMaxHp(player.getCharacter().getMaxHp() + 1));
     }
 
 

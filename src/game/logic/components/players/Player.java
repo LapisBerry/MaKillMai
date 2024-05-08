@@ -10,14 +10,14 @@ public class Player {
 
 
     // Constructors
+    public Player(String name) {
+        setName(name);
+    }
+
     public Player(String name, BaseCharacter character, Role role) {
         setName(name);
         setCharacter(character);
         setRole(role);
-        if (role == Role.EMPEROR) {
-            character.setMaxHp(character.getMaxHp() + 1);
-            character.setHp(character.getHp() + 1);
-        }
     }
 
 

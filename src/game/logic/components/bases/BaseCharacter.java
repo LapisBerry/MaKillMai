@@ -15,7 +15,7 @@ import game.logic.controller.GameController;
  *
  * @author LapisBerry
  */
-public class BaseCharacter {
+public abstract class BaseCharacter {
     // Fields
     private String name;
     private int hp;
@@ -26,16 +26,7 @@ public class BaseCharacter {
     private Player owner; // this will automatically be set when the character is assigned to a player
 
 
-    // Constructor
-    public BaseCharacter() {
-        setName("Dummy");
-        setMaxHp(CONFIG.BASE_STARTING_HEALTH);
-        setHp(CONFIG.BASE_STARTING_HEALTH);
-        setRotPower(CONFIG.BASE_STARTING_ROT_POWER);
-        dicePool = new DicePool();
-        setAbilityDescription("This is a dummy character.");
-    }
-
+    // Constructors
     public BaseCharacter(final String name, final int maxHp, final int hp, final int rotPower, final String abilityDescription) {
         setName(name);
         setMaxHp(maxHp);
