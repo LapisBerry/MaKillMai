@@ -1,6 +1,8 @@
 package app.components;
 
+import app.Main;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
@@ -9,22 +11,25 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 
-public class JoinPane extends StackPane {
-    public JoinPane() {
-        super();
-        Title title = new Title("MaKillMai");
-        InputField username = new InputField("username");
-        InputField ipAddress = new InputField("ip-address");
-        JoinButton joinButton = new JoinButton("Join");
+public class JoinScene extends Scene {
+    public JoinScene() {
+        super(new StackPane(new Container()), 1280, 720);
+    }
 
-        VBox vbox = new VBox();
-        vbox.getChildren().addAll(title, username, ipAddress, joinButton);
-        vbox.setMaxWidth(400);
-        vbox.setMaxHeight(200);
-        vbox.setAlignment(Pos.CENTER);
-        vbox.setSpacing(17);
+    private static class Container extends VBox {
+        private Container() {
+            super();
+            Title title = new Title("MaKillMai");
+            InputField username = new InputField("username");
+            InputField ipAddress = new InputField("ip-address");
+            JoinButton joinButton = new JoinButton("Join");
 
-        getChildren().add(vbox);
+            getChildren().addAll(title, username, ipAddress, joinButton);
+            setMaxWidth(400);
+            setMaxHeight(200);
+            setAlignment(Pos.CENTER);
+            setSpacing(17);
+        }
     }
 
     private static class Title extends Text {
@@ -32,7 +37,6 @@ public class JoinPane extends StackPane {
             super(text);
             setFont(Font.loadFont(ClassLoader.getSystemResource("fonts/Inter-Black.ttf").toString(), 128));
             setTextAlignment(TextAlignment.CENTER);
-            requestFocus();
         }
     }
 
@@ -60,15 +64,10 @@ public class JoinPane extends StackPane {
                 setBackground(new Background(new BackgroundFill(Color.valueOf("00A6D1"), new CornerRadii(40), null)));
                 setCursor(javafx.scene.Cursor.HAND);
             });
-            setOnMouseExited(e -> {
-                setBackground(new Background(new BackgroundFill(Color.valueOf("00C2FF"), new CornerRadii(40), null)));
-            });
-            setOnMousePressed(e -> {
-                setBackground(new Background(new BackgroundFill(Color.valueOf("0089A9"), new CornerRadii(40), null)));
-            });
-            setOnMouseReleased(e -> {
-                setBackground(new Background(new BackgroundFill(Color.valueOf("00A6D1"), new CornerRadii(40), null)));
-            });
+            setOnMouseExited(e -> setBackground(new Background(new BackgroundFill(Color.valueOf("00C2FF"), new CornerRadii(40), null))));
+            setOnMousePressed(e -> setBackground(new Background(new BackgroundFill(Color.valueOf("0089A9"), new CornerRadii(40), null))));
+            setOnMouseReleased(e -> setBackground(new Background(new BackgroundFill(Color.valueOf("00A6D1"), new CornerRadii(40), null))));
+            setOnAction(e -> Main.getPrimaryStage().setScene(new LobbyScene()));
         }
     }
 }
