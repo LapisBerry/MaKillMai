@@ -1,6 +1,6 @@
-package components.players;
+package game.logic.components.players;
 
-import components.bases.BaseCharacter;
+import game.logic.components.bases.BaseCharacter;
 
 public class Player {
     // Fields

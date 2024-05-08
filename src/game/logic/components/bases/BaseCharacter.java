@@ -1,10 +1,10 @@
-package components.bases;
+package game.logic.components.bases;
 
-import components.dices.DiceFace;
-import components.dices.DicePool;
-import components.players.Player;
-import config.CONFIG;
-import controller.GameController;
+import game.logic.components.dices.DiceFace;
+import game.logic.components.dices.DicePool;
+import game.logic.components.players.Player;
+import game.config.CONFIG;
+import game.logic.controller.GameController;
 
 /**
  * The {@code BaseCharacter} class

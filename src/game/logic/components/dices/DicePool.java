@@ -1,4 +1,4 @@
-package components.dices;
+package game.logic.components.dices;
 
 import java.util.Arrays;
 

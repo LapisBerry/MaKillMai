@@ -1,9 +1,9 @@
-package components.rotpool;
+package game.logic.components.rotpool;
 
-import components.bases.BaseCharacter;
-import components.players.Player;
-import config.CONFIG;
-import controller.GameController;
+import game.logic.components.bases.BaseCharacter;
+import game.logic.components.players.Player;
+import game.config.CONFIG;
+import game.logic.controller.GameController;
 
 public class RotPool {
     // Fields

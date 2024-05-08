@@ -1,9 +1,9 @@
-package controller;
+package game.logic.controller;
 
-import components.boards.Board;
-import components.players.Player;
-import components.players.Role;
-import components.rotpool.RotPool;
+import game.logic.components.boards.Board;
+import game.logic.components.players.Player;
+import game.logic.components.players.Role;
+import game.logic.components.rotpool.RotPool;
 
 import java.util.ArrayList;
 

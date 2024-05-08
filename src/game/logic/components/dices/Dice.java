@@ -1,4 +1,4 @@
-package components.dices;
+package game.logic.components.dices;
 
 import utils.Randomizer;
 

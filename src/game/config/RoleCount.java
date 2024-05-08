@@ -1,4 +1,4 @@
-package config;
+package game.config;
 
 /**
  * The {@code RoleCount} class

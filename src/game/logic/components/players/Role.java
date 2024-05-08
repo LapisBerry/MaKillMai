@@ -1,4 +1,4 @@
-package components.players;
+package game.logic.components.players;
 
 public enum Role {
     EMPEROR,
