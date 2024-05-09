@@ -19,6 +19,8 @@ public class GameController {
     private static GameController instance = null; // Instance
     private Board board;
     private RotPool rotPool;
+    private int indexOfCurrentPlayerTurn;
+    private boolean isGameStart;
 
 
     // Constructor
@@ -31,18 +33,22 @@ public class GameController {
         board = new Board(players);
         rotPool = new RotPool();
 
-        // give one maxHp to The Emperor
-        board.getCircleOfPlayers().stream().filter(player -> player.getRole() == Role.EMPEROR).forEach(player -> player.getCharacter().setMaxHp(player.getCharacter().getMaxHp() + 1));
+        // give one maxHp to The Emperor and the starting player is The Emperor
+        for (int i = 0; i < board.getCircleOfPlayers().size(); ++i) {
+            Player player = board.getCircleOfPlayers().get(i);
+            if (player.getRole() == Role.EMPEROR) {
+                indexOfCurrentPlayerTurn = i;
+                player.getCharacter().setMaxHp(player.getCharacter().getMaxHp() + 1);
+                player.getCharacter().setHp(player.getCharacter().getMaxHp() + 1);
+                break;
+            }
+        }
     }
 
 
     // Methods
-    private void removePlayer(Player player) {
-        board.remove(player);
-    }
-
     public boolean isGameStart() {
-        return instance != null;
+        return isGameStart;
     }
 
     public boolean isGameOver() {
@@ -53,6 +59,39 @@ public class GameController {
         instance = null;
     }
 
+    private void startGame() {
+        isGameStart = true;
+        // TODO: implement this method
+    }
+
+    private void checkDeadPlayer() {
+        for (int i = 0; i < board.size(); ++i) {
+            Player player = board.getCircleOfPlayers().get(i);
+            if (player.getCharacter().getHp() <= 0) {
+                // remove player from board
+                removePlayer(i);
+                --i;
+            }
+        }
+    }
+
+    private void removePlayer(Player player) {
+        removePlayer(board.indexOf(player));
+    }
+
+    private void removePlayer(int index) {
+        board.remove(index);
+        // re-index of current player turn
+        if (index < indexOfCurrentPlayerTurn) --indexOfCurrentPlayerTurn;
+        else indexOfCurrentPlayerTurn = indexOfCurrentPlayerTurn % board.size();
+    }
+
+    // when player ends turn by themselves, not by dying
+    private void playerEndsTurn() {
+        indexOfCurrentPlayerTurn = (indexOfCurrentPlayerTurn + 1) % board.size();
+    }
+
+    // count remaining roles
     public int emperorCount() {
         return (int)board.getCircleOfPlayers().stream().filter(player -> player.getRole() == Role.EMPEROR).count();
     }
@@ -84,5 +123,13 @@ public class GameController {
 
     public RotPool getRotPool() {
         return rotPool;
+    }
+
+    public int getIndexOfCurrentPlayerTurn() {
+        return indexOfCurrentPlayerTurn;
+    }
+
+    public void setIndexOfCurrentPlayerTurn(int indexOfCurrentPlayerTurn) {
+        this.indexOfCurrentPlayerTurn = indexOfCurrentPlayerTurn;
     }
 }

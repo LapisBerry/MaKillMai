@@ -54,6 +54,10 @@ public class Board {
         return circleOfPlayers.remove(player);
     }
 
+    public Player remove(int index) {
+        return circleOfPlayers.remove(index);
+    }
+
     public int size() {
         return circleOfPlayers.size();
     }
