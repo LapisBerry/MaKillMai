@@ -2,6 +2,15 @@ package game.logic.components.players;
 
 import game.logic.components.bases.BaseCharacter;
 
+/**
+ * The {@code Player} class represents a player in the game.
+ * <p>
+ *     It has a name, a character, and a role.
+ * <p>
+ *     It is used to store the player's information.
+ * <p>
+ *     The {@code Player} class is the class that will be in the board's circle of players.
+ */
 public class Player {
     // Fields
     private String name;

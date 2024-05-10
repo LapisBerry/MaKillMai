@@ -5,6 +5,13 @@ import game.logic.components.players.Player;
 import game.config.CONFIG;
 import game.logic.controller.GameController;
 
+/**
+ * The {@code RotPool} class represents the rot pool in the game.
+ * <p>
+ *     When the player tosses the dice and gets the rot power symbol, the player takes one rot power from the rot pool.
+ * <p>
+ *     When the rot power is out, all the players take one rot power damage and the rot pool is reset.
+ */
 public class RotPool {
     // Fields
     private int rotPower;

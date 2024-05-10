@@ -13,6 +13,8 @@ import java.util.ArrayList;
  *     It has a board and a rotPool.
  * <p>
  *     It has methods to remove a player, check if the game is over, end the game, and count the number of players with a certain role.
+ * <p>
+ *     It controls the game flow. How the turn should be going.
  */
 public class GameController {
     // Field
