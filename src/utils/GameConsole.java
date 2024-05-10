@@ -2,6 +2,9 @@ package utils;
 
 import game.logic.controller.GameController;
 
+/**
+ * The {@code GameConsole} class is a utility class to print messages to the console.
+ */
 public class GameConsole {
     public static void printStartGame() {
         horizontalBreakLine();

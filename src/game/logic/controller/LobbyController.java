@@ -17,8 +17,8 @@ import java.util.ArrayList;
 public class LobbyController {
     // Fields
     private static LobbyController instance = null;
-    private final ArrayList<Player> players; // only username available
-    private final ArrayList<Player> readyPlayers; // role picked and shuffled position
+    private final ArrayList<Player> players; // only username is available when using this property
+    private final ArrayList<Player> readyPlayers; // after role picking and shuffled position this variable is ready to use and will be sent to GameController to be used in Board
 
 
     // Constructors
@@ -32,8 +32,12 @@ public class LobbyController {
     public void setUpReadyPlayers() {
         readyPlayers.clear();
         readyPlayers.addAll(players);
+
+        // shuffle readyPlayers first to assign the role in random to any player
         Randomizer.shuffleArrayList(readyPlayers);
+        // assign role
         assignRole();
+        // shuffle readyPlayers again to make the position random
         Randomizer.shuffleArrayList(readyPlayers);
     }
 
