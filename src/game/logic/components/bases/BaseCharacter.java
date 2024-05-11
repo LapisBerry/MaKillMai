@@ -1,6 +1,6 @@
 package game.logic.components.bases;
 
-import game.config.CONFIG;
+import game.config.GameConfig;
 import game.logic.components.dices.DiceFace;
 import game.logic.components.dices.DicePool;
 import game.logic.components.players.Player;
@@ -172,7 +172,7 @@ public abstract class BaseCharacter {
 
     public boolean isAbleToUsePureMagic() {
         // to use pure magic you have to have at least 3 pure magic dice
-        return countDiceFace(DiceFace.PURE_MAGIC) >= CONFIG.BASE_REQUIRED_FOR_PURE_MAGIC;
+        return countDiceFace(DiceFace.PURE_MAGIC) >= GameConfig.BASE_REQUIRED_FOR_PURE_MAGIC;
     }
 
     public boolean isAbleToUseStoneSuppressor() {

@@ -1,7 +1,7 @@
 package game.config;
 
 /**
- * The {@code CONFIG} class
+ * The {@code GameConfig} class
  * <p>
  * This class contains only static variable.
  *
@@ -9,7 +9,7 @@ package game.config;
  * They should be used in a constructor for default configuration
  * @author LapisBerry
  */
-public final class CONFIG {
+public final class GameConfig {
     // Character
     public static final int BASE_ATTACK_DAMAGE = 1;
     public static final int BASE_STARTING_HEALTH = 10;

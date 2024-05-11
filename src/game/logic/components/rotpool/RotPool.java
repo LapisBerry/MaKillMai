@@ -1,6 +1,6 @@
 package game.logic.components.rotpool;
 
-import game.config.CONFIG;
+import game.config.GameConfig;
 import game.logic.components.bases.BaseCharacter;
 import game.logic.components.players.Player;
 import game.logic.controller.GameController;
@@ -19,7 +19,7 @@ public class RotPool {
 
     // Constructor
     public RotPool() {
-        rotPower = CONFIG.ROT_POOL;
+        rotPower = GameConfig.ROT_POOL;
     }
 
 
@@ -46,7 +46,7 @@ public class RotPool {
             character.takeRotPowerDamage();
             clearRotPower(character);
         }
-        rotPower = CONFIG.ROT_POOL;
+        rotPower = GameConfig.ROT_POOL;
     }
 
 
