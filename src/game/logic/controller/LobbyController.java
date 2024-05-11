@@ -1,8 +1,8 @@
 package game.logic.controller;
 
+import game.config.RoleCount;
 import game.logic.components.players.Player;
 import game.logic.components.players.Role;
-import game.config.RoleCount;
 import utils.Randomizer;
 
 import java.util.ArrayList;

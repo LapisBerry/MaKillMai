@@ -1,8 +1,8 @@
 package game.logic.components.rotpool;
 
+import game.config.CONFIG;
 import game.logic.components.bases.BaseCharacter;
 import game.logic.components.players.Player;
-import game.config.CONFIG;
 import game.logic.controller.GameController;
 
 /**

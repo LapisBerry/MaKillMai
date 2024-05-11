@@ -1,8 +1,8 @@
 package game.logic.components.boards;
 
-import java.util.ArrayList;
-
 import game.logic.components.players.Player;
+
+import java.util.ArrayList;
 
 /**
  * The {@code Board} class
