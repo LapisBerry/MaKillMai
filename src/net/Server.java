@@ -12,10 +12,6 @@ public class Server {
     private final ServerSocket serverSocket;
     private final ArrayList<ClientHandler> clientHandlers;
 
-    public static void main(String[] args) {
-        Server server = new Server();
-        server.startAcceptingClients();
-    }
 
     // Constructors
     public Server() {
