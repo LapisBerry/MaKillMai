@@ -1,7 +1,6 @@
 package net;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.Socket;
 
 public class ClientHandler implements Runnable {
@@ -13,6 +12,16 @@ public class ClientHandler implements Runnable {
 
 
     // Constructors
+    public ClientHandler(Server server, Socket socket) {
+        this.server = server;
+        this.socket = socket;
+        try {
+            outputStream = new ObjectOutputStream(socket.getOutputStream());
+            inputStream = new ObjectInputStream(socket.getInputStream());
+        } catch (IOException e) {
+            System.out.println("ClientHandler cannot be created.");
+        }
+    }
 
 
     // Methods
