@@ -64,46 +64,6 @@ public class GameController {
     private void startGame() {
         isGameStart = true;
         // TODO: implement this method
-        /*
-        while gameOn:
-            turnOwner(indexOfCurrentPlayerTurn)
-            chooseAction(RollDice) // force roll dices
-            resolveRolledDice()
-
-            if checkDeadPlayer():
-                revealRole()
-                removePlayerFromBoard()
-                if isGameOver():
-                    break
-                elif isTurnOwnerDead():
-                    continue // skip to next player turn
-
-            while hasReRoll():
-                chooseAction(RollDice, lockDice, unlockDice, stopRollDice)
-                if stopRollDice:
-                    break
-                rollUnlockedDice()
-                resolveRolledDice()
-                if checkDeadPlayer():
-                revealRole()
-                removePlayerFromBoard()
-                    if isGameOver():
-                        hardBreak
-                    elif isTurnOwnerDead():
-                        continue // skip to next player turn
-
-            chooseAction(chooseTargetAction) // choose all dice target action
-            resolveAction()
-
-            if checkDeadPlayer():
-                revealRole()
-                removePlayerFromBoard()
-                if isGameOver():
-                    break
-                elif isTurnOwnerDead():
-                    continue // skip to next player turn
-        endGame()
-         */
     }
 
     private void checkDeadPlayer() {

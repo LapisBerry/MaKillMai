@@ -6,8 +6,7 @@ import game.logic.components.players.Role;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 class PlayerTest {
     Player player1;
@@ -31,6 +30,12 @@ class PlayerTest {
         assertEquals("Player2", player2.getName());
         assertEquals("Dummy", player2.getCharacter().getName());
         assertEquals(Role.EMPEROR, player2.getRole());
+    }
+
+    @Test
+    void fullInfo() {
+        assertThrows(NullPointerException.class, () -> player1.fullInfo());
+        assertEquals("Player2 | Dummy | EMPEROR", player2.fullInfo());
     }
 
     @Test

@@ -49,6 +49,10 @@ public class LobbyController {
         players.remove(player);
     }
 
+    public void removePlayer(int index) {
+        players.remove(index);
+    }
+
     private void assignRole() {
         int size = readyPlayers.size();
         int royalistCount = RoleCount.getRoyalists(size);

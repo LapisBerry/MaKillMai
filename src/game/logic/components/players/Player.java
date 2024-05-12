@@ -30,6 +30,12 @@ public class Player {
     }
 
 
+    // Methods
+    public String fullInfo() {
+        return name + " | " + character.getName() + " | " + role;
+    }
+
+
     // Getter Setter
     public String getName() {
         return name;
