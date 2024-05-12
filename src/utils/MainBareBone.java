@@ -8,6 +8,9 @@ import game.logic.controller.LobbyController;
 
 import java.util.Scanner;
 
+import static utils.GameConsole.printChooseAction;
+import static utils.GameConsole.printPlayerDicePool;
+
 /**
  * The {@code MainBareBone} class runs game only logic without any user interface by using console only.
  */
@@ -29,6 +32,7 @@ public class MainBareBone {
         lc = LobbyController.getInstance();
         while (true) {
             GameConsole.printStartLobby();
+            printChooseAction("Add player", "Remove player", "Show All players in lobby", "Start game", "Exit game");
             int choice = inputCheck(1, 5);
             switch (choice) {
                 case 1:
@@ -61,13 +65,49 @@ public class MainBareBone {
         System.out.println("Exiting game...");
     }
 
+    private static void startTurn(int indexOfCurrentPlayerTurn) {
+    }
+
     private static void startGame() {
         gc = GameController.getInstance();
+        Player turnOwner;
         while (!gc.isGameOver()) {
             GameConsole.printPlayersInBoard();
             GameConsole.printPlayerTurn();
-            // TODO
-            int choice = inputCheck(1, 5);
+            turnOwner = gc.getBoard().getCircleOfPlayers().get(gc.getIndexOfCurrentPlayerTurn());
+            turnOwner.getCharacter().startOfTurn();
+
+            printChooseAction("Roll dice");
+            inputCheck(1, 1);
+            turnOwner.getCharacter().getDicePool().rollAllUnlockedDices();
+            turnOwner.getCharacter().setReRollLeft(turnOwner.getCharacter().getReRollLeft() - 1);
+
+            turnOwner.getCharacter().resolveRolledDice();
+            gc.checkAndClearDeadPlayer();
+            if (gc.isGameOver()) break;
+            if (turnOwner.getCharacter().getHp() <= 0) continue;
+
+            while (turnOwner.getCharacter().getReRollLeft() > 0) {
+                printPlayerDicePool(turnOwner);
+                printChooseAction("Roll dice", "Lock dice", "Unlock dice", "Stop rolling dice");
+                int choice = inputCheck(1, 4);
+                switch (choice) {
+                    case 1:
+                        turnOwner.getCharacter().getDicePool().rollAllUnlockedDices();
+                        turnOwner.getCharacter().setReRollLeft(turnOwner.getCharacter().getReRollLeft() - 1);
+                        turnOwner.getCharacter().resolveRolledDice();
+                        break;
+                    case 2:
+                        System.out.println("Enter dice index to lock:");
+                        turnOwner.getCharacter().getDicePool().lockDiceAt(inputCheck(0, turnOwner.getCharacter().getDicePool().getDiceArray().length - 1));
+                        break;
+                    case 3:
+                        System.out.println("Enter dice index to unlock:");
+                        turnOwner.getCharacter().getDicePool().unlockDiceAt(inputCheck(0, turnOwner.getCharacter().getDicePool().getDiceArray().length - 1));
+                        break;
+                }
+                if (choice == 4) break;
+            }
         }
         /*
         while gameOn:

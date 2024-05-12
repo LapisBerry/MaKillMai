@@ -39,7 +39,7 @@ public class DicePool {
     }
 
     public void unlockDiceAt(int index) {
-        isDiceLockedAt[index] = false;
+        if (isUnlockableAt[index]) isDiceLockedAt[index] = false;
     }
 
     public void lockDiceAt(int index) {

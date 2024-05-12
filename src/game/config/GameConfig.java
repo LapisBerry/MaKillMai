@@ -15,6 +15,7 @@ public final class GameConfig {
     public static final int BASE_STARTING_HEALTH = 10;
     public static final int BASE_STARTING_ROT_POWER = 0;
     public static final int BASE_REQUIRED_FOR_PURE_MAGIC = 3;
+    public static final int BASE_ROLL_PER_TURN = 3;
 
     // Dice
     public static final int DICE_POOL_LENGTH = 5;

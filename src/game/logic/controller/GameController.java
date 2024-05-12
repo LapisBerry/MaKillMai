@@ -66,7 +66,8 @@ public class GameController {
         // TODO: implement this method
     }
 
-    private void checkDeadPlayer() {
+    // TODO: PRIVATE THIS METHOD LATER
+    public void checkAndClearDeadPlayer() {
         for (int i = 0; i < board.size(); ++i) {
             Player player = board.getCircleOfPlayers().get(i);
             if (player.getCharacter().getHp() <= 0) {

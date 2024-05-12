@@ -24,6 +24,7 @@ public abstract class BaseCharacter {
     private String abilityDescription;
     private final DicePool dicePool;
     private Player owner; // this will automatically be set when the character is assigned to a player
+    private int reRollLeft;
 
 
     // Constructors
@@ -34,6 +35,7 @@ public abstract class BaseCharacter {
         setRotPower(rotPower);
         setAbilityDescription(abilityDescription);
         dicePool = new DicePool();
+        setReRollLeft(GameConfig.BASE_ROLL_PER_TURN);
     }
 
 
@@ -129,6 +131,10 @@ public abstract class BaseCharacter {
         return count;
     }
 
+    private void resetReRollLeft() {
+        setReRollLeft(GameConfig.BASE_ROLL_PER_TURN);
+    }
+
     // getSomething from game system
     public void takeDynamiteDamage() {
         // take damage from dynamite
@@ -143,6 +149,7 @@ public abstract class BaseCharacter {
     // start, end of turn
     public void startOfTurn() {
         // clear all dice
+        resetReRollLeft();
         getDicePool().makeAllDiceUnlockable();
         getDicePool().unlockAllDices();
     }
@@ -233,5 +240,13 @@ public abstract class BaseCharacter {
 
     public void setOwner(Player owner) {
         this.owner = owner;
+    }
+
+    public int getReRollLeft() {
+        return reRollLeft;
+    }
+
+    public void setReRollLeft(int reRollLeft) {
+        this.reRollLeft = reRollLeft;
     }
 }

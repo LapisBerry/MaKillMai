@@ -1,7 +1,10 @@
 package utils;
 
+import game.logic.components.players.Player;
 import game.logic.controller.GameController;
 import game.logic.controller.LobbyController;
+
+import java.util.ArrayList;
 
 /**
  * The {@code GameConsole} class is a utility class to print messages to the console.
@@ -9,26 +12,20 @@ import game.logic.controller.LobbyController;
 public class GameConsole {
     public static void printStartGame() {
         horizontalBreakLine();
-        System.out.println("Starting game...");
         System.out.println("Welcome to \"MaKillMai\"");
     }
 
     public static void printStartLobby() {
         horizontalBreakLine();
         System.out.println("In lobby");
-        System.out.println("What do you want to do? (Type the number)");
         horizontalBreakLine();
-        System.out.println("<1> Add player");
-        System.out.println("<2> Remove player");
-        System.out.println("<3> Show All players in lobby");
-        System.out.println("<4> Start game (minimum 4 players, maximum 10 players)");
-        System.out.println("<5> Exit game");
     }
 
     public static void printPlayersInLobby() {
         System.out.println("Players in lobby:");
-        for (int i = 0; i < LobbyController.getInstance().getPlayers().size(); ++i) {
-            System.out.println("index: " + i + " - " + LobbyController.getInstance().getPlayers().get(i).getName());
+        ArrayList<Player> players = LobbyController.getInstance().getPlayers();
+        for (int i = 0; i < players.size(); ++i) {
+            System.out.println("index: " + i + " - " + players.get(i).getName());
         }
         horizontalBreakLine();
     }
@@ -44,6 +41,21 @@ public class GameConsole {
     public static void printPlayerTurn() {
         System.out.println("Start turn of player index: " + GameController.getInstance().getIndexOfCurrentPlayerTurn());
         System.out.println("Player name: " + GameController.getInstance().getBoard().getCircleOfPlayers().get(GameController.getInstance().getIndexOfCurrentPlayerTurn()).getName());
+        horizontalBreakLine();
+    }
+
+    public static void printChooseAction(String... actions) {
+        System.out.println("What do you want to do? (Type the number)");
+        horizontalBreakLine();
+        for (int i = 1; i <= actions.length; ++i) {
+            System.out.println("<" + i + "> " + actions[i]);
+        }
+    }
+
+    public static void printPlayerDicePool(Player player) {
+        for (int i = 0; i < player.getCharacter().getDicePool().getDiceArray().length; ++i) {
+            System.out.println("Dice " + i + ": " + player.getCharacter().getDicePool().getDiceArray()[i].getDiceFace());
+        }
         horizontalBreakLine();
     }
 
