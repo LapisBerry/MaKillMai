@@ -19,9 +19,6 @@ public class MainBareBone {
     private static LobbyController lc;
     private static GameController gc;
     private static final Scanner scanner = new Scanner(System.in);
-    static {
-        scanner.useDelimiter("\n");
-    }
 
     public static void main(String[] args) {
         GameConsole.printStartGame();
@@ -37,7 +34,8 @@ public class MainBareBone {
             switch (choice) {
                 case 1:
                     System.out.println("Enter player name:");
-                    lc.addPlayer(new Player(scanner.next(), new Dummy(), Role.EMPEROR));
+                    scanner.skip("\n");
+                    lc.addPlayer(new Player(scanner.nextLine(), new Dummy(), Role.EMPEROR));
                     break;
                 case 2:
                     GameConsole.printPlayersInLobby();
@@ -66,48 +64,64 @@ public class MainBareBone {
     }
 
     private static void startTurn(int indexOfCurrentPlayerTurn) {
+        // print start turn
+        GameConsole.printPlayersInBoard();
+        GameConsole.printPlayerTurn();
+
+        // this is turnOwner
+        Player turnOwner = gc.getBoard().getCircleOfPlayers().get(gc.getIndexOfCurrentPlayerTurn());
+        turnOwner.getCharacter().startOfTurn();
+
+        // player can only roll dice
+        printChooseAction("Roll dice");
+        inputCheck(1, 1);
+        turnOwner.getCharacter().getDicePool().rollAllUnlockedDices();
+        turnOwner.getCharacter().setReRollLeft(turnOwner.getCharacter().getReRollLeft() - 1);
+        turnOwner.getCharacter().resolveRolledDice();
+        gc.checkAndClearDeadPlayer();
+
+        // if isGameOver, end game or if player is dead, skip to next player
+        if (gc.isGameOver() || turnOwner.getCharacter().getHp() <= 0) return;
+
+        while (turnOwner.getCharacter().getReRollLeft() > 0) {
+            printPlayerDicePool(turnOwner);
+            printChooseAction("Roll dice", "Lock dice", "Unlock dice", "Stop rolling dice");
+            int choice = inputCheck(1, 4);
+            switch (choice) {
+                case 1:
+                    turnOwner.getCharacter().getDicePool().rollAllUnlockedDices();
+                    turnOwner.getCharacter().setReRollLeft(turnOwner.getCharacter().getReRollLeft() - 1);
+                    turnOwner.getCharacter().resolveRolledDice();
+                    gc.checkAndClearDeadPlayer();
+                    // if isGameOver, end game or if player is dead, skip to next player
+                    if (gc.isGameOver() || turnOwner.getCharacter().getHp() <= 0) return;
+                    break;
+                case 2:
+                    System.out.println("Enter dice index to lock:");
+                    turnOwner.getCharacter().getDicePool().lockDiceAt(inputCheck(0, turnOwner.getCharacter().getDicePool().getDiceArray().length - 1));
+                    break;
+                case 3:
+                    System.out.println("Enter dice index to unlock:");
+                    turnOwner.getCharacter().getDicePool().unlockDiceAt(inputCheck(0, turnOwner.getCharacter().getDicePool().getDiceArray().length - 1));
+                    break;
+            }
+            if (choice == 4) break;
+        }
+
+        printPlayerDicePool(turnOwner);
+        String actions[] = new String[turnOwner.getCharacter().getDicePool().getDiceArray().length];
+        for (int i = 0; i < actions.length; ++i) {
+            actions[i] = "Use dice " + i + ": " + turnOwner.getCharacter().getDicePool().getDiceArray()[i].getDiceFace();
+        }
+        printChooseAction(actions);
+        int choice = inputCheck(1, actions.length);
+        // TODO: resolve target action
     }
 
     private static void startGame() {
         gc = GameController.getInstance();
-        Player turnOwner;
         while (!gc.isGameOver()) {
-            GameConsole.printPlayersInBoard();
-            GameConsole.printPlayerTurn();
-            turnOwner = gc.getBoard().getCircleOfPlayers().get(gc.getIndexOfCurrentPlayerTurn());
-            turnOwner.getCharacter().startOfTurn();
-
-            printChooseAction("Roll dice");
-            inputCheck(1, 1);
-            turnOwner.getCharacter().getDicePool().rollAllUnlockedDices();
-            turnOwner.getCharacter().setReRollLeft(turnOwner.getCharacter().getReRollLeft() - 1);
-
-            turnOwner.getCharacter().resolveRolledDice();
-            gc.checkAndClearDeadPlayer();
-            if (gc.isGameOver()) break;
-            if (turnOwner.getCharacter().getHp() <= 0) continue;
-
-            while (turnOwner.getCharacter().getReRollLeft() > 0) {
-                printPlayerDicePool(turnOwner);
-                printChooseAction("Roll dice", "Lock dice", "Unlock dice", "Stop rolling dice");
-                int choice = inputCheck(1, 4);
-                switch (choice) {
-                    case 1:
-                        turnOwner.getCharacter().getDicePool().rollAllUnlockedDices();
-                        turnOwner.getCharacter().setReRollLeft(turnOwner.getCharacter().getReRollLeft() - 1);
-                        turnOwner.getCharacter().resolveRolledDice();
-                        break;
-                    case 2:
-                        System.out.println("Enter dice index to lock:");
-                        turnOwner.getCharacter().getDicePool().lockDiceAt(inputCheck(0, turnOwner.getCharacter().getDicePool().getDiceArray().length - 1));
-                        break;
-                    case 3:
-                        System.out.println("Enter dice index to unlock:");
-                        turnOwner.getCharacter().getDicePool().unlockDiceAt(inputCheck(0, turnOwner.getCharacter().getDicePool().getDiceArray().length - 1));
-                        break;
-                }
-                if (choice == 4) break;
-            }
+            startTurn(gc.getIndexOfCurrentPlayerTurn());
         }
         /*
         while gameOn:

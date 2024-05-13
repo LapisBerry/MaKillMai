@@ -47,14 +47,14 @@ public class GameConsole {
     public static void printChooseAction(String... actions) {
         System.out.println("What do you want to do? (Type the number)");
         horizontalBreakLine();
-        for (int i = 1; i <= actions.length; ++i) {
-            System.out.println("<" + i + "> " + actions[i]);
+        for (int i = 0; i < actions.length; ++i) {
+            System.out.println("<" + (i + 1) + "> " + actions[i]);
         }
     }
 
     public static void printPlayerDicePool(Player player) {
         for (int i = 0; i < player.getCharacter().getDicePool().getDiceArray().length; ++i) {
-            System.out.println("Dice " + i + ": " + player.getCharacter().getDicePool().getDiceArray()[i].getDiceFace());
+            System.out.println("Dice " + i + ": " + player.getCharacter().getDicePool().getDiceArray()[i].getDiceFace() + ((player.getCharacter().getDicePool().isDiceLockedAt(i)) ? " (locked)" : ""));
         }
         horizontalBreakLine();
     }

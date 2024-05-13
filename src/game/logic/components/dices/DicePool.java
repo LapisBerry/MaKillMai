@@ -54,9 +54,21 @@ public class DicePool {
         Arrays.fill(isUnlockableAt, true);
     }
 
+    public boolean isDiceLockedAt(int index) {
+        return isDiceLockedAt[index];
+    }
+
+    public boolean isUnlockableAt(int index) {
+        return isUnlockableAt[index];
+    }
+
 
     // Getter Setter
     public Dice[] getDiceArray() {
         return diceArray;
+    }
+
+    public Dice getDiceAt(int index) {
+        return diceArray[index];
     }
 }
