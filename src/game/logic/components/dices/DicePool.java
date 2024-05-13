@@ -34,8 +34,9 @@ public class DicePool {
         }
     }
 
-    public void unlockAllDices() {
-        Arrays.fill(isDiceLockedAt, false);
+    public void resetAllDices() {
+        unlockAllDices();
+        makeAllDiceUnlockable();
     }
 
     public void unlockDiceAt(int index) {
@@ -50,16 +51,20 @@ public class DicePool {
         isUnlockableAt[index] = false;
     }
 
-    public void makeAllDiceUnlockable() {
-        Arrays.fill(isUnlockableAt, true);
-    }
-
     public boolean isDiceLockedAt(int index) {
         return isDiceLockedAt[index];
     }
 
     public boolean isUnlockableAt(int index) {
         return isUnlockableAt[index];
+    }
+
+    private void unlockAllDices() {
+        Arrays.fill(isDiceLockedAt, false);
+    }
+
+    private void makeAllDiceUnlockable() {
+        Arrays.fill(isUnlockableAt, true);
     }
 
 

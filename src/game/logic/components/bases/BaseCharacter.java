@@ -23,7 +23,6 @@ public abstract class BaseCharacter {
     private int rotPower;
     private String abilityDescription;
     private final DicePool dicePool;
-    private Player owner; // this will automatically be set when the character is assigned to a player
     private int reRollLeft;
 
 
@@ -40,6 +39,26 @@ public abstract class BaseCharacter {
 
 
     // Dice Methods
+    // roll dice
+    public void rollAllUnlockedDices() {
+        getDicePool().rollAllUnlockedDices();
+    }
+
+    // When character rolls and get those dice faces, call these functions, what will happen to them
+    public void resolveRolledDice() {
+        for (int i = 0; i < getDicePool().getDiceArray().length; ++i) {
+            switch (getDicePool().getDiceArray()[i].getDiceFace()) {
+                case ATTACK_1 -> rollsIntoAttack1(i);
+                case ATTACK_2 -> rollsIntoAttack2(i);
+                case HEALTH_POTION -> rollsIntoHealthPotion(i);
+                case ROT_POWER -> rollsIntoRotPower(i);
+                case PURE_MAGIC -> rollsIntoPureMagic(i);
+                case STONE_SUPPRESSOR -> rollsIntoStoneSuppressor(i);
+            }
+        }
+    }
+
+    // using dice on baseCharacter
     public void useAttack1(BaseCharacter anotherBaseCharacter) {
         anotherBaseCharacter.takeAttack1From(this);
     }
@@ -63,7 +82,7 @@ public abstract class BaseCharacter {
 
     public void useStoneSuppressor() {/*blank*/}
 
-    // getSomething from anotherBaseCharacter
+    // takeSomething from anotherBaseCharacter
     public void takeAttack1From(BaseCharacter anotherBaseCharacter) {
         setHp(getHp() - 1);
     }
@@ -84,22 +103,7 @@ public abstract class BaseCharacter {
         setHp(getHp() - 1);
     }
 
-    // When character rolls and get those dice faces, call these functions, what will happen to them
-    public void resolveRolledDice() {
-        for (int i = 0; i < getDicePool().getDiceArray().length; ++i) {
-            switch (getDicePool().getDiceArray()[i].getDiceFace()) {
-                case ATTACK_1 -> rollsIntoAttack1(i);
-                case ATTACK_2 -> rollsIntoAttack2(i);
-                case HEALTH_POTION -> rollsIntoHealthPotion(i);
-                case ROT_POWER -> rollsIntoRotPower(i);
-                case PURE_MAGIC -> rollsIntoPureMagic(i);
-                case STONE_SUPPRESSOR -> rollsIntoStoneSuppressor(i);
-                default -> {
-                }
-            }
-        }
-    }
-
+    // rollsIntoSomething
     public void rollsIntoAttack1(int indexOfDice) {/*blank*/}
 
     public void rollsIntoAttack2(int indexOfDice) {/*blank*/}
@@ -120,19 +124,8 @@ public abstract class BaseCharacter {
         getDicePool().makeDiceUnableToBeUnlockedAt(indexOfDice);
     }
 
-    // utility
-    private int countDiceFace(DiceFace diceFace) {
-        int count = 0;
-        for (int i = 0; i < getDicePool().getDiceArray().length; ++i) {
-            if (getDicePool().getDiceArray()[i].getDiceFace() == diceFace) {
-                ++count;
-            }
-        }
-        return count;
-    }
-
-    private void resetReRollLeft() {
-        setReRollLeft(GameConfig.BASE_ROLL_PER_TURN);
+    public boolean isGetStoneSuppressorPenalty() {
+        return countDiceFace(DiceFace.STONE_SUPPRESSOR) >= 3;
     }
 
     // getSomething from game system
@@ -148,23 +141,24 @@ public abstract class BaseCharacter {
 
     // start, end of turn
     public void startOfTurn() {
-        // clear all dice
-        resetReRollLeft();
-        getDicePool().makeAllDiceUnlockable();
-        getDicePool().unlockAllDices();
+        // reset reRollLeft
+        setReRollLeft(GameConfig.BASE_ROLL_PER_TURN);
+        // reset all dice
+        getDicePool().resetAllDices();
     }
 
     public void endOfTurn() {
     }
 
     // is able to use something
-    public boolean isAbleToUseAttack1On(Player player) {
-        return GameController.getInstance().getBoard().distanceBetween(getOwner(), player) == 1;
+    public boolean isAbleToUseAttack1On(Player characterOwner, Player otherPlayer) {
+        return GameController.getInstance().getBoard().distanceBetween(characterOwner, otherPlayer) == 1;
     }
 
-    public boolean isAbleToUseAttack2On(Player player) {
-        if (GameController.getInstance().getBoard().getCircleOfPlayers().size() <= 3) return isAbleToUseAttack1On(player);
-        return GameController.getInstance().getBoard().distanceBetween(getOwner(), player) == 2;
+    public boolean isAbleToUseAttack2On(Player characterOwner, Player otherPlayer) {
+        if (GameController.getInstance().getBoard().getCircleOfPlayers().size() <= 3)
+            return isAbleToUseAttack1On(characterOwner, otherPlayer);
+        return GameController.getInstance().getBoard().distanceBetween(characterOwner, otherPlayer) == 2;
     }
 
     public boolean isAbleToUseHealthPotionOn(Player player) {
@@ -185,6 +179,17 @@ public abstract class BaseCharacter {
     public boolean isAbleToUseStoneSuppressor() {
         // normally you cannot use stone suppressor
         return false;
+    }
+
+    // utility
+    private int countDiceFace(DiceFace diceFace) {
+        int count = 0;
+        for (int i = 0; i < getDicePool().getDiceArray().length; ++i) {
+            if (getDicePool().getDiceArray()[i].getDiceFace() == diceFace) {
+                ++count;
+            }
+        }
+        return count;
     }
 
 
@@ -232,14 +237,6 @@ public abstract class BaseCharacter {
 
     public DicePool getDicePool() {
         return dicePool;
-    }
-
-    public Player getOwner() {
-        return owner;
-    }
-
-    public void setOwner(Player owner) {
-        this.owner = owner;
     }
 
     public int getReRollLeft() {
