@@ -30,12 +30,12 @@ public class MediaController {
 
 
     // Methods
-    public static void playOnce(MediaPlayer mediaPlayer) {
+    public static void playMediaOnce(MediaPlayer mediaPlayer) {
         mediaPlayer.seek(Duration.ZERO);
         mediaPlayer.play();
     }
 
-    public static void playForever(MediaPlayer mediaPlayer) {
+    public static void playMediaForever(MediaPlayer mediaPlayer) {
         mediaPlayer.seek(Duration.ZERO);
         mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
         mediaPlayer.play();
