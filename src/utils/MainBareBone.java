@@ -152,13 +152,35 @@ public class MainBareBone {
     }
 
     private static void turnStateResolveAction(Player turnOwner) {
-        printPlayersInBoard();
-        printPlayerDicePool(turnOwner);
         while (true) {
-            /*
-            using which dice
-            if allDice has been choose target
-             */
+            printPlayersInBoard();
+            printPlayerDicePool(turnOwner);
+            int choice;
+            printPlayerChoosingDicePoolTarget(turnOwner);
+
+            if (!turnOwner.getCharacter().isAbleToResolveAction()) {
+                choice = inputCheck(1, 5);
+            } else {
+                System.out.println("<6> Resolve action");
+                choice = inputCheck(1, 6);
+            }
+            switch (choice) {
+                // TODO: Implement these cases
+                case 1 -> {
+                }
+                case 2 -> {
+                }
+                case 3 -> {
+                }
+                case 4 -> {
+                }
+                case 5 -> {
+                }
+                case 6 -> {
+                    // make gc resolve dice action from this player
+                    return;
+                }
+            }
         }
     }
 

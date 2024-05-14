@@ -1,5 +1,6 @@
 package utils;
 
+import game.logic.components.dices.DicePool;
 import game.logic.components.players.Player;
 import game.logic.controller.GameController;
 import game.logic.controller.LobbyController;
@@ -53,8 +54,17 @@ public class GameConsole {
     }
 
     public static void printPlayerDicePool(Player player) {
-        for (int i = 0; i < player.getCharacter().getDicePool().getDiceArray().length; ++i) {
-            System.out.println("Dice " + i + ": " + player.getCharacter().getDicePool().getDiceArray()[i].getDiceFace() + ((player.getCharacter().getDicePool().isDiceLockedAt(i)) ? " (locked)" : ""));
+        DicePool dicePool = player.getCharacter().getDicePool();
+        for (int i = 0; i < dicePool.getDiceArray().length; ++i) {
+            System.out.println("Dice " + i + ": " + dicePool.getDiceArray()[i].getDiceFace() + ((dicePool.isDiceLockedAt(i)) ? " (locked)" : ""));
+        }
+        horizontalBreakLine();
+    }
+
+    public static void printPlayerChoosingDicePoolTarget(Player player) {
+        DicePool dicePool = player.getCharacter().getDicePool();
+        for (int i = 0; i < dicePool.getDiceArray().length; ++i) {
+            System.out.println("<" + (i + 1) + "> Use dice " + (i + 1) + ": " + dicePool.getDiceArray()[i].getDiceFace() + ((dicePool.getPlayerTargetedByDiceAt(i) != null) ? " (targeting " + dicePool.getPlayerTargetedByDiceAt(i).getName() + ")" : " no target"));
         }
         horizontalBreakLine();
     }

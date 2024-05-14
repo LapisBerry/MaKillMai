@@ -1,5 +1,7 @@
 package game.logic.components.dices;
 
+import game.logic.components.players.Player;
+
 import java.util.Arrays;
 
 /**
@@ -8,6 +10,7 @@ import java.util.Arrays;
  * <p>Q: What is dice pool?
  * <p>A: Every player will have 5 dice. Dice pool is like a plate for those 5 dices!
  * <p>You can roll all dices in the pool. You can lock the specific dice. You can unlock the specific dice.
+ *
  * @author LapisBerry
  */
 public class DicePool {
@@ -15,13 +18,15 @@ public class DicePool {
     private final Dice[] diceArray;
     private final boolean[] isDiceLockedAt;
     private final boolean[] isUnlockableAt;
+    private final Player[] playerTargetedByDiceAt;
 
-    
+
     // Constructors
     public DicePool() {
         diceArray = new Dice[]{new Dice(), new Dice(), new Dice(), new Dice(), new Dice()};
         isDiceLockedAt = new boolean[]{false, false, false, false, false};
         isUnlockableAt = new boolean[]{true, true, true, true, true};
+        playerTargetedByDiceAt = new Player[]{null, null, null, null, null};
     }
 
 
@@ -37,6 +42,7 @@ public class DicePool {
     public void resetAllDices() {
         unlockAllDices();
         makeAllDiceUnlockable();
+        resetPlayerTargetedByDice();
     }
 
     public void unlockDiceAt(int index) {
@@ -59,12 +65,20 @@ public class DicePool {
         return isUnlockableAt[index];
     }
 
+    public void setPlayerTargetedByDiceAt(int index, Player player) {
+        playerTargetedByDiceAt[index] = player;
+    }
+
     private void unlockAllDices() {
         Arrays.fill(isDiceLockedAt, false);
     }
 
     private void makeAllDiceUnlockable() {
         Arrays.fill(isUnlockableAt, true);
+    }
+
+    private void resetPlayerTargetedByDice() {
+        Arrays.fill(playerTargetedByDiceAt, null);
     }
 
 
@@ -75,5 +89,9 @@ public class DicePool {
 
     public Dice getDiceAt(int index) {
         return diceArray[index];
+    }
+
+    public Player getPlayerTargetedByDiceAt(int index) {
+        return playerTargetedByDiceAt[index];
     }
 }

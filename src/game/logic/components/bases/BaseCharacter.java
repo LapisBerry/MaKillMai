@@ -1,6 +1,7 @@
 package game.logic.components.bases;
 
 import game.config.GameConfig;
+import game.logic.components.dices.Dice;
 import game.logic.components.dices.DiceFace;
 import game.logic.components.dices.DicePool;
 import game.logic.components.players.Player;
@@ -160,14 +161,29 @@ public abstract class BaseCharacter {
         return GameController.getInstance().getBoard().distanceBetween(characterOwner, otherPlayer) == 1;
     }
 
+    public boolean isAbleToUseAttack1() {
+        // normally you can use attack 1
+        return true;
+    }
+
     public boolean isAbleToUseAttack2On(Player characterOwner, Player otherPlayer) {
         if (GameController.getInstance().getBoard().getCircleOfPlayers().size() <= 3)
             return isAbleToUseAttack1On(characterOwner, otherPlayer);
         return GameController.getInstance().getBoard().distanceBetween(characterOwner, otherPlayer) == 2;
     }
 
+    public boolean isAbleToUseAttack2() {
+        // normally you cannot use attack 2
+        return true;
+    }
+
     public boolean isAbleToUseHealthPotionOn(Player player) {
         // normally you can use health potion on anyone
+        return true;
+    }
+
+    public boolean isAbleToUseHealthPotion() {
+        // normally you cannot use health potion
         return true;
     }
 
@@ -188,6 +204,27 @@ public abstract class BaseCharacter {
 
     public boolean hasReRollLeft() {
         return getReRollLeft() > 0;
+    }
+
+    public boolean isAbleToResolveAction() {
+        for (int i = 0; i < getDicePool().getDiceArray().length; ++i) {
+            // if the dice is already aim to someone, it's okay
+            if (getDicePool().getPlayerTargetedByDiceAt(i) != null) continue;
+
+            boolean isAbleToUseThisDice;
+            DiceFace diceFace = getDicePool().getDiceArray()[i].getDiceFace();
+            switch (diceFace) {
+                case ATTACK_1 -> isAbleToUseThisDice = isAbleToUseAttack1();
+                case ATTACK_2 -> isAbleToUseThisDice = isAbleToUseAttack2();
+                case HEALTH_POTION -> isAbleToUseThisDice = isAbleToUseHealthPotion();
+                case ROT_POWER -> isAbleToUseThisDice = isAbleToUseRotPower();
+                case PURE_MAGIC -> isAbleToUseThisDice = isAbleToUsePureMagic();
+                case STONE_SUPPRESSOR -> isAbleToUseThisDice = isAbleToUseStoneSuppressor();
+                default -> isAbleToUseThisDice = false;
+            }
+            if (isAbleToUseThisDice) return false;
+        }
+        return true;
     }
 
     // utility
