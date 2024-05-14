@@ -21,6 +21,7 @@ public abstract class BaseCharacter {
     private int hp;
     private int maxHp;
     private int rotPower;
+    private final int rollPerTurn;
     private String abilityDescription;
     private final DicePool dicePool;
     private int reRollLeft;
@@ -32,16 +33,20 @@ public abstract class BaseCharacter {
         setMaxHp(maxHp);
         setHp(hp);
         setRotPower(rotPower);
+        rollPerTurn = GameConfig.BASE_ROLL_PER_TURN;
         setAbilityDescription(abilityDescription);
         dicePool = new DicePool();
-        setReRollLeft(GameConfig.BASE_ROLL_PER_TURN);
+        setReRollLeft(rollPerTurn);
     }
 
 
     // Dice Methods
     // roll dice
     public void rollAllUnlockedDices() {
-        getDicePool().rollAllUnlockedDices();
+        if (hasReRollLeft()) {
+            --reRollLeft;
+            getDicePool().rollAllUnlockedDices();
+        }
     }
 
     // When character rolls and get those dice faces, call these functions, what will happen to them
@@ -142,7 +147,7 @@ public abstract class BaseCharacter {
     // start, end of turn
     public void startOfTurn() {
         // reset reRollLeft
-        setReRollLeft(GameConfig.BASE_ROLL_PER_TURN);
+        setReRollLeft(rollPerTurn);
         // reset all dice
         getDicePool().resetAllDices();
     }
@@ -179,6 +184,10 @@ public abstract class BaseCharacter {
     public boolean isAbleToUseStoneSuppressor() {
         // normally you cannot use stone suppressor
         return false;
+    }
+
+    public boolean hasReRollLeft() {
+        return getReRollLeft() > 0;
     }
 
     // utility
@@ -225,6 +234,10 @@ public abstract class BaseCharacter {
 
     public void setRotPower(int rotPower) {
         this.rotPower = rotPower;
+    }
+
+    public int getRollPerTurn() {
+        return rollPerTurn;
     }
 
     public String getAbilityDescription() {

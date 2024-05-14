@@ -22,7 +22,7 @@ public class GameController {
     private Board board;
     private RotPool rotPool;
     private int indexOfCurrentPlayerTurn;
-    private boolean isGameStart;
+    private TurnState turnState;
 
 
     // Constructor
@@ -49,10 +49,6 @@ public class GameController {
 
 
     // Methods
-    public boolean isGameStart() {
-        return isGameStart;
-    }
-
     public boolean isGameOver() {
         return emperorCount() == 0 || rebelCount() + spyCount() == 0 || board.size() <= 1;
     }
@@ -62,8 +58,12 @@ public class GameController {
     }
 
     private void startGame() {
-        isGameStart = true;
-        // TODO: implement this method
+        // TODO
+    }
+
+    private void startTurn(int indexOfCurrentPlayerTurn) {
+        // TODO
+        turnState = TurnState.RollDice;
     }
 
     // TODO: PRIVATE THIS METHOD LATER
@@ -78,10 +78,6 @@ public class GameController {
         }
     }
 
-    private void removePlayer(Player player) {
-        removePlayer(board.indexOf(player));
-    }
-
     private void removePlayer(int index) {
         board.remove(index);
         // re-index of current player turn
@@ -90,7 +86,8 @@ public class GameController {
     }
 
     // when player ends turn by themselves, not by dying
-    private void playerEndsTurn() {
+    // TODO: PRIVATE THIS METHOD LATER
+    public void playerEndsTurn() {
         indexOfCurrentPlayerTurn = (indexOfCurrentPlayerTurn + 1) % board.size();
     }
 
