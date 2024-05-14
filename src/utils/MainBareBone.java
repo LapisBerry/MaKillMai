@@ -152,16 +152,14 @@ public class MainBareBone {
     }
 
     private static void turnStateResolveAction(Player turnOwner) {
-        // TODO
         printPlayersInBoard();
         printPlayerDicePool(turnOwner);
-        String actions[] = new String[turnOwner.getCharacter().getDicePool().getDiceArray().length];
-        for (int i = 0; i < actions.length; ++i) {
-            actions[i] = "Use dice " + i + ": " + turnOwner.getCharacter().getDicePool().getDiceArray()[i].getDiceFace();
+        while (true) {
+            /*
+            using which dice
+            if allDice has been choose target
+             */
         }
-        printChooseAction(actions);
-        int choice = inputCheck(1, actions.length);
-        // TODO
     }
 
     private static void turnStateEndTurn(Player turnOwner) {
