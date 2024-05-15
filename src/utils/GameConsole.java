@@ -66,6 +66,7 @@ public class GameConsole {
         for (int i = 0; i < dicePool.getDiceArray().length; ++i) {
             System.out.println("<" + (i + 1) + "> Use dice " + (i + 1) + ": " + dicePool.getDiceArray()[i].getDiceFace() + ((dicePool.getPlayerTargetedByDiceAt(i) != null) ? " (targeting " + dicePool.getPlayerTargetedByDiceAt(i).getName() + ")" : " no target"));
         }
+        if (player.getCharacter().isAbleToResolveAction()) System.out.println("<6> Resolve action");
         horizontalBreakLine();
     }
 

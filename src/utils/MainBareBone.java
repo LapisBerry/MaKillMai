@@ -2,6 +2,7 @@ package utils;
 
 import game.logic.components.bases.BaseCharacter;
 import game.logic.components.characters.Dummy;
+import game.logic.components.dices.DiceFace;
 import game.logic.components.dices.DicePool;
 import game.logic.components.players.Player;
 import game.logic.components.players.Role;
@@ -158,30 +159,30 @@ public class MainBareBone {
             int choice;
             printPlayerChoosingDicePoolTarget(turnOwner);
 
-            if (!turnOwner.getCharacter().isAbleToResolveAction()) {
-                choice = inputCheck(1, 5);
-            } else {
-                System.out.println("<6> Resolve action");
-                choice = inputCheck(1, 6);
-            }
+            if (!turnOwner.getCharacter().isAbleToResolveAction()) choice = inputCheck(1, 5);
+            else choice = inputCheck(1, 6);
+
             switch (choice) {
                 // TODO: Implement these cases
-                case 1 -> {
-                }
-                case 2 -> {
-                }
-                case 3 -> {
-                }
-                case 4 -> {
-                }
-                case 5 -> {
-                }
+                case 1, 2, 3, 4, 5 -> resolveActionChoosingTarget(turnOwner, choice - 1);
                 case 6 -> {
-                    // make gc resolve dice action from this player
+                    for (int i = 0; i < turnOwner.getCharacter().getDicePool().getDiceArray().length; ++i) {
+                        if (turnOwner.getCharacter().getDicePool().getPlayerTargetedByDiceAt(i) != null) {
+                            // resolve action
+                            // gc.resolveDiceAction(turnOwner, i);
+                            // TODO: BaseCharacter.resolveRolledDice() will be called here
+                        }
+                    }
                     return;
                 }
             }
         }
+    }
+
+    private static void resolveActionChoosingTarget(Player turnOwner, int diceIndex) {
+        DicePool dicePool = turnOwner.getCharacter().getDicePool();
+        DiceFace diceFace = dicePool.getDiceArray()[diceIndex].getDiceFace();
+        // TODO: Implement this
     }
 
     private static void turnStateEndTurn(Player turnOwner) {
