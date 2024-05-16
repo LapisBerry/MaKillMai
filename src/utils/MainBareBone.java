@@ -9,6 +9,7 @@ import game.logic.components.players.Role;
 import game.logic.controller.GameController;
 import game.logic.controller.LobbyController;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import static utils.GameConsole.*;
@@ -163,16 +164,9 @@ public class MainBareBone {
             else choice = inputCheck(1, 6);
 
             switch (choice) {
-                // TODO: Implement these cases
                 case 1, 2, 3, 4, 5 -> resolveActionChoosingTarget(turnOwner, choice - 1);
                 case 6 -> {
-                    for (int i = 0; i < turnOwner.getCharacter().getDicePool().getDiceArray().length; ++i) {
-                        if (turnOwner.getCharacter().getDicePool().getPlayerTargetedByDiceAt(i) != null) {
-                            // resolve action
-                            // gc.resolveDiceAction(turnOwner, i);
-                            // TODO: BaseCharacter.resolveRolledDice() will be called here
-                        }
-                    }
+                    turnOwner.getCharacter().resolveDiceAction();
                     return;
                 }
             }
@@ -182,7 +176,72 @@ public class MainBareBone {
     private static void resolveActionChoosingTarget(Player turnOwner, int diceIndex) {
         DicePool dicePool = turnOwner.getCharacter().getDicePool();
         DiceFace diceFace = dicePool.getDiceArray()[diceIndex].getDiceFace();
-        // TODO: Implement this
+        switch (diceFace) {
+            case ATTACK_1 -> {
+                if (turnOwner.getCharacter().isAbleToUseAttack1()) {
+
+                } else System.out.println("You can't use Attack 1");
+            }
+            case ATTACK_2 -> {
+                if (turnOwner.getCharacter().isAbleToUseAttack2()) {
+
+                } else System.out.println("You can't use Attack 2");
+            }
+            case HEALTH_POTION -> {
+                if (turnOwner.getCharacter().isAbleToUseHealthPotion()) {
+
+                } else System.out.println("You can't use Health Potion");
+            }
+            case PURE_MAGIC -> pureMagicChoosingTarget(turnOwner, diceIndex);
+            case ROT_POWER -> {
+                if (!turnOwner.getCharacter().isAbleToUseRotPower()) System.out.println("You can't use Rot Power");
+            }
+            case STONE_SUPPRESSOR -> {
+                if (!turnOwner.getCharacter().isAbleToUseStoneSuppressor())
+                    System.out.println("You can't use Stone Suppressor");
+            }
+        }
+    }
+
+    private static void attack1ChoosingTarget(Player turnOwner, int diceIndex) {
+        ArrayList<Player> targetablePlayer = new ArrayList<>();
+        for (int i = 0; i < gc.getBoard().getCircleOfPlayers().size(); ++i) {
+            Player otherPlayer = gc.getBoard().getCircleOfPlayers().get(i);
+            if (turnOwner.getCharacter().isAbleToUseAttack1On(turnOwner, otherPlayer))
+                targetablePlayer.add(otherPlayer);
+        }
+        // TODO
+    }
+
+    private static void attack2ChoosingTarget(Player turnOwner, int diceIndex) {
+        ArrayList<Player> targetablePlayer = new ArrayList<>();
+        for (int i = 0; i < gc.getBoard().getCircleOfPlayers().size(); ++i) {
+            Player otherPlayer = gc.getBoard().getCircleOfPlayers().get(i);
+            if (turnOwner.getCharacter().isAbleToUseAttack2On(turnOwner, otherPlayer))
+                targetablePlayer.add(otherPlayer);
+        }
+    }
+
+    private static void healthPotionChoosingTarget(Player turnOwner, int diceIndex) {
+        ArrayList<Player> targetablePlayer = new ArrayList<>();
+        for (int i = 0; i < gc.getBoard().getCircleOfPlayers().size(); ++i) {
+            Player otherPlayer = gc.getBoard().getCircleOfPlayers().get(i);
+            if (turnOwner.getCharacter().isAbleToUseAttack1On(turnOwner, otherPlayer))
+                targetablePlayer.add(otherPlayer);
+        }
+        // TODO
+    }
+
+    private static void pureMagicChoosingTarget(Player turnOwner, int diceIndex) {
+        if (turnOwner.getCharacter().isAbleToUsePureMagic()) {
+            printChooseAction("Use Pure Magic", "Don't use Pure Magic");
+            int choice = inputCheck(1, 2);
+            switch (choice) {
+                case 1 -> turnOwner.getCharacter().setWantToUsePureMagic(true);
+                case 2 -> turnOwner.getCharacter().setWantToUsePureMagic(false);
+            }
+        } else
+            System.out.println("You can't use Pure Magic, you need to have at least " + turnOwner.getCharacter().getRequiredForPureMagic() + " Pure Magic dice face");
     }
 
     private static void turnStateEndTurn(Player turnOwner) {

@@ -26,6 +26,8 @@ public abstract class BaseCharacter {
     private String abilityDescription;
     private final DicePool dicePool;
     private int reRollLeft;
+    private boolean isWantToUsePureMagic;
+    private int requiredForPureMagic;
 
 
     // Constructors
@@ -38,6 +40,7 @@ public abstract class BaseCharacter {
         setAbilityDescription(abilityDescription);
         dicePool = new DicePool();
         setReRollLeft(rollPerTurn);
+        setRequiredForPureMagic(GameConfig.BASE_REQUIRED_FOR_PURE_MAGIC);
     }
 
 
@@ -194,7 +197,7 @@ public abstract class BaseCharacter {
 
     public boolean isAbleToUsePureMagic() {
         // to use pure magic you have to have at least 3 pure magic dice
-        return countDiceFace(DiceFace.PURE_MAGIC) >= GameConfig.BASE_REQUIRED_FOR_PURE_MAGIC;
+        return countDiceFace(DiceFace.PURE_MAGIC) >= requiredForPureMagic;
     }
 
     public boolean isAbleToUseStoneSuppressor() {
@@ -225,6 +228,23 @@ public abstract class BaseCharacter {
             if (isAbleToUseThisDice) return false;
         }
         return true;
+    }
+
+    public void resolveDiceAction() {
+        for (int i = 0; i < getDicePool().getDiceArray().length; ++i) {
+            if (getDicePool().getPlayerTargetedByDiceAt(i) != null) {
+                DiceFace diceFace = getDicePool().getDiceArray()[i].getDiceFace();
+                switch (diceFace) {
+                    case ATTACK_1 -> useAttack1(getDicePool().getPlayerTargetedByDiceAt(i).getCharacter());
+                    case ATTACK_2 -> useAttack2(getDicePool().getPlayerTargetedByDiceAt(i).getCharacter());
+                    case HEALTH_POTION -> useHealthPotion(getDicePool().getPlayerTargetedByDiceAt(i).getCharacter());
+                    case ROT_POWER -> useRotPower(); // normally this should not happen
+                    case PURE_MAGIC -> usePureMagic(); // to usePureMagic, it's controlled by isWantToUsePureMagic variable
+                    case STONE_SUPPRESSOR -> useStoneSuppressor(); // normally this should not happen
+                }
+            }
+        }
+        if (isWantToUsePureMagic) usePureMagic();
     }
 
     // utility
@@ -295,5 +315,21 @@ public abstract class BaseCharacter {
 
     public void setReRollLeft(int reRollLeft) {
         this.reRollLeft = reRollLeft;
+    }
+
+    public boolean isWantToUsePureMagic() {
+        return isWantToUsePureMagic;
+    }
+
+    public void setWantToUsePureMagic(boolean wantToUsePureMagic) {
+        isWantToUsePureMagic = wantToUsePureMagic;
+    }
+
+    public int getRequiredForPureMagic() {
+        return requiredForPureMagic;
+    }
+
+    public void setRequiredForPureMagic(int requiredForPureMagic) {
+        this.requiredForPureMagic = requiredForPureMagic;
     }
 }
