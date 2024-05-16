@@ -177,6 +177,7 @@ public class MainBareBone {
         DicePool dicePool = turnOwner.getCharacter().getDicePool();
         DiceFace diceFace = dicePool.getDiceArray()[diceIndex].getDiceFace();
         switch (diceFace) {
+            // TODO: clean this up
             case ATTACK_1 -> {
                 if (turnOwner.getCharacter().isAbleToUseAttack1()) {
 
@@ -242,6 +243,12 @@ public class MainBareBone {
             }
         } else
             System.out.println("You can't use Pure Magic, you need to have at least " + turnOwner.getCharacter().getRequiredForPureMagic() + " Pure Magic dice face");
+    }
+
+    private static void rotPowerChoosingTarget(Player turnOwner, int diceIndex) {
+    }
+
+    private static void stoneSuppressorChoosingTarget(Player turnOwner, int diceIndex) {
     }
 
     private static void turnStateEndTurn(Player turnOwner) {
