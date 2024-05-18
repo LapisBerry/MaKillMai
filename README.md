@@ -7,7 +7,7 @@ This game is called _"MaKillMai"_
 ## Game design 📖
 Turn Based, Dice, Board game (Bang! lookalike).
 
-For more information check out `GameDesign.pdf`
+For more information check out `ducumentation` folder.
 
 ## Contribution 📝
 I use [JavaFX][JavaFX-url] because I learn that from school. I don't have the plan to change to [libGDX][libGDX-url] and probably will never change it.
