@@ -1,25 +1,28 @@
 package com.lapisberry;
 
+import com.lapisberry.gui.scenes.JoinScene;
 import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 public class Main extends Application {
+    private static Stage primaryStage;
+
+    public static void main(String[] args) {
+        launch(args);
+    }
 
     @Override
     public void start(Stage stage) {
-        String javaVersion = System.getProperty("java.version");
-        String javafxVersion = System.getProperty("javafx.version");
-        Label l = new Label("Hello, JavaFX " + javafxVersion + ", running on Java " + javaVersion + ".");
-        Scene scene = new Scene(new StackPane(l), 640, 480);
-        stage.setScene(scene);
-        stage.show();
+        primaryStage = stage;
+        primaryStage.setScene(new JoinScene());
+
+        primaryStage.show();
+
+        // This line will make the username field unfocused when started.
+        primaryStage.getScene().getRoot().requestFocus();
     }
 
-    public static void main(String[] args) {
-        launch();
+    public static Stage getPrimaryStage() {
+        return primaryStage;
     }
-
 }
