@@ -2,6 +2,7 @@ package com.lapisberry;
 
 import com.lapisberry.gui.scenes.JoinScene;
 import javafx.application.Application;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class Main extends Application {
@@ -14,6 +15,8 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) {
         primaryStage = stage;
+        primaryStage.setTitle("MaKillMai");
+        primaryStage.getIcons().add(new Image(ClassLoader.getSystemResource("images/makillmai-icon.png").toString()));
         primaryStage.setScene(new JoinScene());
 
         primaryStage.show();

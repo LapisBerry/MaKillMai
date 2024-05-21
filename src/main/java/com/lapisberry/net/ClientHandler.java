@@ -7,8 +7,8 @@ import java.net.Socket;
 
 public class ClientHandler implements Runnable {
     // Fields
-    private Server server;
-    private Socket socket;
+    private final Server server;
+    private final Socket socket;
     private ObjectOutputStream outputStream;
     private ObjectInputStream inputStream;
 
@@ -29,5 +29,34 @@ public class ClientHandler implements Runnable {
     // Methods
     @Override
     public void run() {
+        new Thread(this::startListeningClientPacket, "Listening client packet thread").start();
+    }
+
+    private void startListeningClientPacket() {
+        while (!socket.isClosed()) {
+            try {
+                Object packet = inputStream.readObject();
+                server.processPacketFromClient(this, packet);
+            } catch (IOException e) {
+                System.out.println("Client disconnected: " + socket.getInetAddress().getHostAddress());
+                break;
+            } catch (ClassNotFoundException e) {
+                System.out.println("Packet from client cannot be read.");
+            }
+        }
+    }
+
+    private void sendPacketToClient(Object packet) {
+        try {
+            outputStream.writeObject(packet);
+            outputStream.flush();
+        } catch (IOException e) {
+            System.out.println("Packet cannot be sent to client.");
+        }
+    }
+
+    // Getters Setters
+    public Socket getSocket() {
+        return socket;
     }
 }

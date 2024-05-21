@@ -43,4 +43,8 @@ public class Server implements Runnable {
             }
         }
     }
+
+    public void processPacketFromClient(ClientHandler sender, Object packet) {
+        System.out.println("Processing packet from " + sender.getSocket().getInetAddress().getHostAddress() + ": " + packet);
+    }
 }

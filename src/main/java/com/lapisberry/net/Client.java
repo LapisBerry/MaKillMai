@@ -27,5 +27,29 @@ public class Client implements Runnable {
     // Methods
     @Override
     public void run() {
+        new Thread(this::startListeningServerPacket, "Listening server packet thread").start();
+    }
+
+    private void startListeningServerPacket() {
+        while (!socket.isClosed()) {
+            try {
+                Object packet = inputStream.readObject();
+                System.out.println("Packet received from server: " + packet);
+            } catch (IOException e) {
+                System.out.println("Server disconnected.");
+                break;
+            } catch (ClassNotFoundException e) {
+                System.out.println("Packet from server cannot be read.");
+            }
+        }
+    }
+
+    private void sendPacketToServer(Object packet) {
+        try {
+            outputStream.writeObject(packet);
+            outputStream.flush();
+        } catch (IOException e) {
+            System.out.println("Packet cannot be sent to server.");
+        }
     }
 }
