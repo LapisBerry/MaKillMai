@@ -47,4 +47,10 @@ public class Server implements Runnable {
     public void processPacketFromClient(ClientHandler sender, Object packet) {
         System.out.println("Processing packet from " + sender.getSocket().getInetAddress().getHostAddress() + ": " + packet);
     }
+
+    private void sendPacketToAllClients(Object packet) {
+        for (ClientHandler clientHandler : clientHandlers) {
+            clientHandler.sendPacketToClient(packet);
+        }
+    }
 }

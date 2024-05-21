@@ -1,5 +1,6 @@
 package com.lapisberry.net;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -46,7 +47,7 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    private void sendPacketToClient(Object packet) {
+    public void sendPacketToClient(Object packet) {
         try {
             outputStream.writeObject(packet);
             outputStream.flush();
