@@ -1,13 +1,16 @@
 package com.lapisberry;
 
 import com.lapisberry.gui.scenes.JoinScene;
+import com.lapisberry.net.Server;
 import javafx.application.Application;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class Main extends Application {
     private static Stage primaryStage;
+    private static Server server;
 
+    // methods
     public static void main(String[] args) {
         launch(args);
     }
@@ -23,6 +26,14 @@ public class Main extends Application {
 
         // This line will make the username field unfocused when started.
         primaryStage.getScene().getRoot().requestFocus();
+    }
+
+    public static void createServer() {
+        server = new Server();
+    }
+
+    public static void closeServer() {
+        server.close();
     }
 
     public static Stage getPrimaryStage() {

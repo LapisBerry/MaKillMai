@@ -2,6 +2,7 @@ package com.lapisberry.gui.scenes;
 
 import com.lapisberry.Main;
 import com.lapisberry.gui.MediaController;
+import com.lapisberry.net.Server;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -26,8 +27,9 @@ public class JoinScene extends Scene {
             InputField username = new InputField("username");
             InputField ipAddress = new InputField("ip-address");
             JoinButton joinButton = new JoinButton("Join");
+            CreateServerButton createServerButton = new CreateServerButton();
 
-            getChildren().addAll(title, username, ipAddress, joinButton);
+            getChildren().addAll(title, username, ipAddress, joinButton, createServerButton);
             setMaxWidth(400);
             setMaxHeight(200);
             setAlignment(Pos.CENTER);
@@ -73,6 +75,36 @@ public class JoinScene extends Scene {
             setOnAction(e -> {
                 Main.getPrimaryStage().setScene(new LobbyScene());
                 MediaController.playMediaOnce(MediaController.buttonClickSound);
+            });
+        }
+    }
+
+    private static class CreateServerButton extends Button {
+        private boolean isServerCreated = false;
+
+        private CreateServerButton() {
+            super("Create Server");
+            setFont(Font.loadFont(Inter_SemiBold, 18));
+            setBackground(new Background(new BackgroundFill(Color.valueOf("00C2FF"), new CornerRadii(20), null)));
+            setMaxWidth(180);
+            setMinHeight(40);
+            setAlignment(Pos.CENTER);
+            setOnMouseEntered(e -> {
+                setBackground(new Background(new BackgroundFill(Color.valueOf("00A6D1"), new CornerRadii(20), null)));
+                setCursor(javafx.scene.Cursor.HAND);
+            });
+            setOnMouseExited(e -> setBackground(new Background(new BackgroundFill(Color.valueOf("00C2FF"), new CornerRadii(20), null))));
+            setOnMousePressed(e -> setBackground(new Background(new BackgroundFill(Color.valueOf("0089A9"), new CornerRadii(20), null))));
+            setOnMouseReleased(e -> setBackground(new Background(new BackgroundFill(Color.valueOf("00A6D1"), new CornerRadii(20), null))));
+            setOnAction(e -> {
+                if (isServerCreated) {
+                    setText("Create Server");
+                    Main.closeServer();
+                } else {
+                    setText("Close Server");
+                    Main.createServer();
+                }
+                isServerCreated = !isServerCreated;
             });
         }
     }

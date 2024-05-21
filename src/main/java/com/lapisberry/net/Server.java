@@ -2,6 +2,7 @@ package com.lapisberry.net;
 
 import com.lapisberry.utils.Config;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -51,6 +52,14 @@ public class Server implements Runnable {
     private void sendPacketToAllClients(Object packet) {
         for (ClientHandler clientHandler : clientHandlers) {
             clientHandler.sendPacketToClient(packet);
+        }
+    }
+
+    public void close() {
+        try {
+            serverSocket.close();
+        } catch (IOException e) {
+            System.out.println("Server cannot be closed.");
         }
     }
 }
