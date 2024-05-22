@@ -12,6 +12,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static com.lapisberry.gui.FontPreloader.*;
@@ -85,10 +86,11 @@ public class JoinScene extends Scene {
     }
 
     private static class CreateServerButton extends Button {
-        private boolean isServerCreated = false;
 
         private CreateServerButton() {
             super("Create Server");
+            AtomicBoolean isServerCreated = new AtomicBoolean(false);
+
             final Background blueRegularBackground = new Background(new BackgroundFill(Color.valueOf("00C2FF"), new CornerRadii(40), null));
             final Background blueHoverBackground = new Background(new BackgroundFill(Color.valueOf("00A6D1"), new CornerRadii(40), null));
             final Background bluePressedBackground = new Background(new BackgroundFill(Color.valueOf("0089A9"), new CornerRadii(40), null));
@@ -114,7 +116,7 @@ public class JoinScene extends Scene {
             setOnMousePressed(e -> setBackground(pressedBackground.get()));
             setOnMouseReleased(e -> setBackground(hoverBackground.get()));
             setOnAction(e -> {
-                if (isServerCreated) {
+                if (isServerCreated.get()) {
                     Main.closeServer();
                     setText("Create Server");
                     regularBackground.set(blueRegularBackground);
@@ -127,7 +129,7 @@ public class JoinScene extends Scene {
                     hoverBackground.set(redHoverBackground);
                     pressedBackground.set(redPressedBackground);
                 }
-                isServerCreated = !isServerCreated;
+                isServerCreated.set(!isServerCreated.get());
             });
         }
     }

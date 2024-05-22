@@ -21,6 +21,10 @@ public class Main extends Application {
         primaryStage.setTitle("MaKillMai");
         primaryStage.getIcons().add(new Image(ClassLoader.getSystemResource("images/makillmai-icon.png").toString()));
         primaryStage.setScene(new JoinScene());
+        primaryStage.setOnCloseRequest(event -> {
+            closeServer();
+            System.exit(0);
+        });
 
         primaryStage.show();
 
@@ -34,7 +38,7 @@ public class Main extends Application {
     }
 
     public static void closeServer() {
-        server.close();
+        if (server != null) server.close();
     }
 
     public static Stage getPrimaryStage() {
