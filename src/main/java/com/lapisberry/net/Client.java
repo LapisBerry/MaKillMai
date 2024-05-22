@@ -1,6 +1,7 @@
 package com.lapisberry.net;
 
 import com.lapisberry.net.packets.ClientPacket;
+import com.lapisberry.net.packets.JoinRequestPacket;
 import com.lapisberry.net.packets.ServerPacket;
 import com.lapisberry.utils.Config;
 import com.lapisberry.utils.exceptions.ConnectionRefusedException;
@@ -54,6 +55,10 @@ public class Client implements Runnable {
         } catch (IOException e) {
             System.out.println("Packet cannot be sent to server.");
         }
+    }
+
+    public void sendJoinRequestPacket(String username) {
+        sendPacketToServer(new JoinRequestPacket(username));
     }
 
     public void close() {

@@ -1,6 +1,7 @@
 package com.lapisberry;
 
 import com.lapisberry.gui.scenes.JoinScene;
+import com.lapisberry.gui.scenes.LobbyScene;
 import com.lapisberry.net.Client;
 import com.lapisberry.net.Server;
 import com.lapisberry.utils.exceptions.ConnectionRefusedException;
@@ -23,7 +24,7 @@ public class Main extends Application {
         primaryStage = stage;
         primaryStage.setTitle("MaKillMai");
         primaryStage.getIcons().add(new Image(ClassLoader.getSystemResource("images/makillmai-icon.png").toString()));
-        primaryStage.setScene(new JoinScene());
+        goToJoinScene();
         primaryStage.setOnCloseRequest(event -> {
             closeServer();
             closeClient();
@@ -34,6 +35,14 @@ public class Main extends Application {
 
         // This line will make the username field unfocused when started.
         primaryStage.getScene().getRoot().requestFocus();
+    }
+
+    public static void goToJoinScene() {
+        primaryStage.setScene(new JoinScene());
+    }
+
+    public static void goToLobbyScene() {
+        primaryStage.setScene(new LobbyScene());
     }
 
     public static void createServer() {

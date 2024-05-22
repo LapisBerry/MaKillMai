@@ -92,8 +92,12 @@ public class JoinScene extends Scene {
                     return;
                 }
                 try {
+                    // Create client using host IP address, might throw ConnectionRefusedException
                     Main.createClient(ipAddress.getText());
-                    Main.getPrimaryStage().setScene(new LobbyScene());
+                    // Send join request packet to server
+                    Main.getClient().sendJoinRequestPacket(username.getText());
+                    // Go to lobby scene
+                    Main.goToLobbyScene();
                 } catch (ConnectionRefusedException ex) {
                     alertContainer.alert("Connection refused.");
                 }
