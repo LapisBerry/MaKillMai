@@ -1,6 +1,9 @@
 package com.lapisberry.net;
 
+import com.lapisberry.net.packets.ClientPacket;
+import com.lapisberry.net.packets.ServerPacket;
 import com.lapisberry.utils.Config;
+import com.lapisberry.utils.exceptions.ConnectionRefusedException;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -20,7 +23,8 @@ public class Client implements Runnable {
             this.outputStream = new ObjectOutputStream(socket.getOutputStream());
             this.inputStream = new ObjectInputStream(socket.getInputStream());
         } catch (IOException e) {
-            throw new RuntimeException("Client cannot be created.");
+            System.out.println("Client cannot be created.");
+            throw new ConnectionRefusedException("Connection refused.");
         }
     }
 
@@ -33,23 +37,32 @@ public class Client implements Runnable {
     private void startListeningServerPacket() {
         while (!socket.isClosed()) {
             try {
-                Object packet = inputStream.readObject();
+                ServerPacket packet = (ServerPacket) inputStream.readObject();
                 System.out.println("Packet received from server: " + packet);
             } catch (IOException e) {
                 System.out.println("Server disconnected.");
-                break;
-            } catch (ClassNotFoundException e) {
+            } catch (ClassNotFoundException | ClassCastException e) {
                 System.out.println("Packet from server cannot be read.");
             }
         }
     }
 
-    private void sendPacketToServer(Object packet) {
+    private void sendPacketToServer(ClientPacket packet) {
         try {
             outputStream.writeObject(packet);
             outputStream.flush();
         } catch (IOException e) {
             System.out.println("Packet cannot be sent to server.");
+        }
+    }
+
+    public void close() {
+        try {
+            socket.close();
+            outputStream.close();
+            inputStream.close();
+        } catch (IOException e) {
+            System.out.println("Client cannot be closed.");
         }
     }
 }

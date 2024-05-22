@@ -1,5 +1,7 @@
 package com.lapisberry.net;
 
+import com.lapisberry.net.packets.ClientPacket;
+import com.lapisberry.net.packets.ServerPacket;
 import com.lapisberry.utils.Config;
 
 import java.io.IOException;
@@ -35,20 +37,20 @@ public class Server implements Runnable {
                 Socket socket = serverSocket.accept();
                 ClientHandler clientHandler = new ClientHandler(this, socket);
                 clientHandlers.add(clientHandler);
+                new Thread(clientHandler).start();
 
                 System.out.println("Client connected: " + socket.getInetAddress().getHostAddress());
-                new Thread(clientHandler).start();
             } catch (IOException e) {
                 System.out.println("Server cannot accept client anymore. Server is closed.");
             }
         }
     }
 
-    public void processPacketFromClient(ClientHandler sender, Object packet) {
+    public void processPacketFromClient(ClientHandler sender, ClientPacket packet) {
         System.out.println("Processing packet from " + sender.getSocket().getInetAddress().getHostAddress() + ": " + packet);
     }
 
-    private void sendPacketToAllClients(Object packet) {
+    private void sendPacketToAllClients(ServerPacket packet) {
         for (ClientHandler clientHandler : clientHandlers) {
             clientHandler.sendPacketToClient(packet);
         }

@@ -1,6 +1,8 @@
 package com.lapisberry.net;
 
-import java.io.EOFException;
+import com.lapisberry.net.packets.ClientPacket;
+import com.lapisberry.net.packets.ServerPacket;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -12,7 +14,6 @@ public class ClientHandler implements Runnable {
     private final Socket socket;
     private ObjectOutputStream outputStream;
     private ObjectInputStream inputStream;
-
 
     // Constructors
     public ClientHandler(Server server, Socket socket) {
@@ -26,7 +27,6 @@ public class ClientHandler implements Runnable {
         }
     }
 
-
     // Methods
     @Override
     public void run() {
@@ -36,7 +36,7 @@ public class ClientHandler implements Runnable {
     private void startListeningClientPacket() {
         while (!socket.isClosed()) {
             try {
-                Object packet = inputStream.readObject();
+                ClientPacket packet = (ClientPacket) inputStream.readObject();
                 server.processPacketFromClient(this, packet);
             } catch (IOException e) {
                 System.out.println("Client disconnected: " + socket.getInetAddress().getHostAddress());
@@ -47,7 +47,7 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    public void sendPacketToClient(Object packet) {
+    public void sendPacketToClient(ServerPacket packet) {
         try {
             outputStream.writeObject(packet);
             outputStream.flush();

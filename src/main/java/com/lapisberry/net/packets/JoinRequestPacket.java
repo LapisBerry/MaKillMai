@@ -8,13 +8,19 @@ import java.io.Serializable;
  */
 public class JoinRequestPacket extends ClientPacket implements Serializable {
     @Serial
-    private static final long serialVersionUID = -3120924882895484001L;
+    private static final long serialVersionUID = 8969814260705260127L;
     // Fields
     private final String username;
 
     // Constructors
     public JoinRequestPacket(String username) {
         this.username = username;
+    }
+
+    // Methods
+    @Override
+    public String toString() {
+        return "JoinRequestPacket{username=" + username + "}";
     }
 
     // Getters

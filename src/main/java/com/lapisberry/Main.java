@@ -1,7 +1,9 @@
 package com.lapisberry;
 
 import com.lapisberry.gui.scenes.JoinScene;
+import com.lapisberry.net.Client;
 import com.lapisberry.net.Server;
+import com.lapisberry.utils.exceptions.ConnectionRefusedException;
 import javafx.application.Application;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
@@ -9,6 +11,7 @@ import javafx.stage.Stage;
 public class Main extends Application {
     private static Stage primaryStage;
     private static Server server;
+    private static Client client;
 
     // methods
     public static void main(String[] args) {
@@ -23,6 +26,7 @@ public class Main extends Application {
         primaryStage.setScene(new JoinScene());
         primaryStage.setOnCloseRequest(event -> {
             closeServer();
+            closeClient();
             System.exit(0);
         });
 
@@ -41,7 +45,21 @@ public class Main extends Application {
         if (server != null) server.close();
     }
 
+    public static void createClient(String host) {
+        client = new Client(host);
+        new Thread(client, "Client thread").start();
+    }
+
+    public static void closeClient() {
+        if (client != null) client.close();
+    }
+
+    // Getters Setters
     public static Stage getPrimaryStage() {
         return primaryStage;
+    }
+
+    public static Client getClient() {
+        return client;
     }
 }
