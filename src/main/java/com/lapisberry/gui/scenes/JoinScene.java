@@ -150,6 +150,7 @@ public class JoinScene extends Scene {
                     pressedBackground.set(redPressedBackground);
                 }
                 isServerCreated.set(!isServerCreated.get());
+                setBackground(regularBackground.get());
             });
         }
     }

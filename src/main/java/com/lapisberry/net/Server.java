@@ -1,5 +1,7 @@
 package com.lapisberry.net;
 
+import com.lapisberry.game.controllers.GameController;
+import com.lapisberry.game.controllers.LobbyController;
 import com.lapisberry.net.packets.ClientPacket;
 import com.lapisberry.net.packets.ServerPacket;
 import com.lapisberry.utils.Config;
@@ -13,6 +15,8 @@ public class Server implements Runnable {
     // Fields
     private final ServerSocket serverSocket;
     private final ArrayList<ClientHandler> clientHandlers;
+    private final LobbyController serverLobby;
+    private final GameController serverGame;
 
     // Constructors
     public Server() {
@@ -22,6 +26,8 @@ public class Server implements Runnable {
             throw new RuntimeException("Server cannot be created.");
         }
         clientHandlers = new ArrayList<>();
+        serverLobby = new LobbyController();
+        serverGame = new GameController();
     }
 
     // Methods

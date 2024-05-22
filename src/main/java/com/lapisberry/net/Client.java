@@ -1,5 +1,7 @@
 package com.lapisberry.net;
 
+import com.lapisberry.game.controllers.GameController;
+import com.lapisberry.game.controllers.LobbyController;
 import com.lapisberry.net.packets.ClientPacket;
 import com.lapisberry.net.packets.JoinRequestPacket;
 import com.lapisberry.net.packets.ServerPacket;
@@ -16,6 +18,8 @@ public class Client implements Runnable {
     private final Socket socket;
     private final ObjectInputStream inputStream;
     private final ObjectOutputStream outputStream;
+    private final LobbyController clientLobby;
+    private final GameController clientGame;
 
     // Constructors
     public Client(final String host) {
@@ -27,6 +31,8 @@ public class Client implements Runnable {
             System.out.println("Client cannot be created.");
             throw new ConnectionRefusedException("Connection refused.");
         }
+        clientLobby = new LobbyController();
+        clientGame = new GameController();
     }
 
     // Methods

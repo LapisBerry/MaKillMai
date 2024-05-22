@@ -4,7 +4,6 @@ import com.lapisberry.gui.scenes.JoinScene;
 import com.lapisberry.gui.scenes.LobbyScene;
 import com.lapisberry.net.Client;
 import com.lapisberry.net.Server;
-import com.lapisberry.utils.exceptions.ConnectionRefusedException;
 import javafx.application.Application;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
