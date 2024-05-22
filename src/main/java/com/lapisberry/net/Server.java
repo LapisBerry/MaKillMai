@@ -2,7 +2,6 @@ package com.lapisberry.net;
 
 import com.lapisberry.utils.Config;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;

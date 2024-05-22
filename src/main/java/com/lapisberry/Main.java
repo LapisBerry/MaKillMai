@@ -30,6 +30,7 @@ public class Main extends Application {
 
     public static void createServer() {
         server = new Server();
+        new Thread(server, "Server thread").start();
     }
 
     public static void closeServer() {
