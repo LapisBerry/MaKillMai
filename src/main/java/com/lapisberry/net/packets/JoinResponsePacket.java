@@ -3,6 +3,9 @@ package com.lapisberry.net.packets;
 import java.io.Serial;
 import java.io.Serializable;
 
+/**
+ * The {@code JoinResponsePacket} class is the packet sending from server to client to response the {@code JoinRequestPacket}.
+ */
 public class JoinResponsePacket extends ServerPacket implements Serializable {
     @Serial
     private static final long serialVersionUID = -5576292645379280835L;
