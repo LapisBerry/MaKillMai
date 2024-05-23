@@ -18,24 +18,6 @@ public class Main extends Application {
         launch(args);
     }
 
-    @Override
-    public void start(Stage stage) {
-        primaryStage = stage;
-        primaryStage.setTitle("MaKillMai");
-        primaryStage.getIcons().add(new Image(ClassLoader.getSystemResource("images/makillmai-icon.png").toString()));
-        goToJoinScene();
-        primaryStage.setOnCloseRequest(event -> {
-            closeServer();
-            closeClient();
-            System.exit(0);
-        });
-
-        primaryStage.show();
-
-        // This line will make the username field unfocused when started.
-        primaryStage.getScene().getRoot().requestFocus();
-    }
-
     public static void goToJoinScene() {
         primaryStage.setScene(new JoinScene());
     }
@@ -69,5 +51,23 @@ public class Main extends Application {
 
     public static Client getClient() {
         return client;
+    }
+
+    @Override
+    public void start(Stage stage) {
+        primaryStage = stage;
+        primaryStage.setTitle("MaKillMai");
+        primaryStage.getIcons().add(new Image(ClassLoader.getSystemResource("images/makillmai-icon.png").toString()));
+        goToJoinScene();
+        primaryStage.setOnCloseRequest(event -> {
+            closeServer();
+            closeClient();
+            System.exit(0);
+        });
+
+        primaryStage.show();
+
+        // This line will make the username field unfocused when started.
+        primaryStage.getScene().getRoot().requestFocus();
     }
 }

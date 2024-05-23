@@ -1,8 +1,11 @@
 package com.lapisberry.gui.scenes;
 
 import com.lapisberry.Main;
+import com.lapisberry.game.controllers.LobbyController;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -17,19 +20,29 @@ import static com.lapisberry.gui.FontPreloader.Inter_Black;
 import static com.lapisberry.gui.FontPreloader.Inter_SemiBold;
 
 public class LobbyScene extends Scene {
+    private static final Title title = new Title("Lobby");
+    private static final PlayerPanel playerPanel = new PlayerPanel();
+    private static final StartButton startButton = new StartButton("Start Game");
+    private static final Container container = new Container(title, playerPanel, startButton);
+
     public LobbyScene() {
-        super(new StackPane(new Container()), Main.getPrimaryStage().getScene().getWidth(), Main.getPrimaryStage().getScene().getHeight());
+        super(new StackPane(container), Main.getPrimaryStage().getScene().getWidth(), Main.getPrimaryStage().getScene().getHeight());
+    }
+
+    public static void updatePlayerList(LobbyController lobbyController) {
+        Platform.runLater(() -> {
+            PlayerPanel.PlayerList.vbox.getChildren().clear();
+            lobbyController.getPlayers().forEach(pair -> addPlayer(pair.getValue()));
+        });
+    }
+
+    private static void addPlayer(String name) {
+        PlayerPanel.PlayerList.addPlayer(name);
     }
 
     private static class Container extends VBox {
-        private Container() {
-            super();
-            Title title = new Title("Lobby");
-            PlayerPanel playerPanel = new PlayerPanel();
-            StartButton startButton = new StartButton("Start Game");
-
-            //VBox vbox = new VBox();
-            getChildren().addAll(title, playerPanel, startButton);
+        private Container(Node... children) {
+            super(children);
             setMaxWidth(400);
             setMaxHeight(200);
             setAlignment(Pos.CENTER);
@@ -68,10 +81,10 @@ public class LobbyScene extends Scene {
         }
 
         private static class PlayerList extends ScrollPane {
+            private static final VBox vbox = new VBox();
+
             private PlayerList() {
                 super();
-                VBox vbox = new VBox();
-                vbox.getChildren().addAll(new PlayerItem("Player 1"), new PlayerItem("Player 2"), new PlayerItem("Player 1"), new PlayerItem("Player 2"), new PlayerItem("Player 1"), new PlayerItem("Player 2"), new PlayerItem("Player 1"), new PlayerItem("Player 2"));
                 vbox.setMinWidth(336);
                 vbox.setBackground(new Background(new BackgroundFill(Color.valueOf("D9D9D9"), new CornerRadii(0), null)));
                 vbox.setAlignment(Pos.TOP_CENTER);
@@ -80,6 +93,10 @@ public class LobbyScene extends Scene {
                 setMaxWidth(338);
                 setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, new CornerRadii(0), null)));
                 setContent(vbox);
+            }
+
+            private static void addPlayer(String name) {
+                vbox.getChildren().add(new PlayerItem(name));
             }
         }
 

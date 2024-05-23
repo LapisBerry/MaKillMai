@@ -16,13 +16,15 @@ public final class MediaController {
     // Preload all musics
     // Music should play forever
 
+    // preload all sound fxs
+    // sound fx should play one time
+    public static final MediaPlayer buttonClickSound = loadRes("audios/button-click.mp3");
+
     // Set volume for music
     static {
 
     }
-    // preload all sound fxs
-    // sound fx should play one time
-    public static final MediaPlayer buttonClickSound = loadRes("audios/button-click.mp3");
+
     // Set volume for sound fx
     static {
         buttonClickSound.setVolume(0.8);

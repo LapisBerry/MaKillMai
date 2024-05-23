@@ -159,12 +159,18 @@ public class JoinScene extends Scene {
 
     private static class AlertContainer extends BorderPane {
         private static final Label alertLabel = new Label();
+
         static {
             alertLabel.setFont(Font.loadFont(Inter_Regular, 18));
             alertLabel.setTextFill(Color.WHITE);
             alertLabel.setBackground(new Background(new BackgroundFill(Color.valueOf("FF0000"), new CornerRadii(10), null)));
             alertLabel.setPadding(new Insets(10));
             alertLabel.setAlignment(Pos.CENTER);
+        }
+
+        private AlertContainer() {
+            super();
+            setPadding(new Insets(10));
         }
 
         private void alert(final String alertMessage) {
@@ -177,11 +183,6 @@ public class JoinScene extends Scene {
                 }
                 Platform.runLater(() -> setRight(null));
             }, "alert thread").start();
-        }
-
-        private AlertContainer() {
-            super();
-            setPadding(new Insets(10));
         }
     }
 }

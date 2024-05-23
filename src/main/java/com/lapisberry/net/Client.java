@@ -2,8 +2,10 @@ package com.lapisberry.net;
 
 import com.lapisberry.game.controllers.GameController;
 import com.lapisberry.game.controllers.LobbyController;
+import com.lapisberry.gui.scenes.LobbyScene;
 import com.lapisberry.net.packets.ClientPacket;
 import com.lapisberry.net.packets.JoinResponsePacket;
+import com.lapisberry.net.packets.LobbyPacket;
 import com.lapisberry.net.packets.ServerPacket;
 import com.lapisberry.utils.Config;
 import com.lapisberry.utils.exceptions.ConnectionRefusedException;
@@ -16,11 +18,11 @@ import java.net.Socket;
 public class Client implements Runnable {
     // Fields
     private final Socket socket;
-    private int clientId;
     private final ObjectInputStream inputStream;
     private final ObjectOutputStream outputStream;
     private final LobbyController clientLobby;
     private final GameController clientGame;
+    private int clientId;
 
     // Constructors
     public Client(final String host) {
@@ -49,16 +51,21 @@ public class Client implements Runnable {
                 processPacketFromServer(packet);
             } catch (IOException e) {
                 System.out.println("Server disconnected.");
+                break;
             } catch (ClassNotFoundException | ClassCastException e) {
                 System.out.println("Packet from server cannot be read.");
             }
         }
+        close();
     }
 
     private void processPacketFromServer(ServerPacket packet) {
         System.out.println("Processing packet from server: " + packet);
         if (packet instanceof JoinResponsePacket joinResponsePacket) {
             setClientId(joinResponsePacket.getClientId());
+        } else if (packet instanceof LobbyPacket lobbyPacket) {
+            clientLobby.setPlayers(lobbyPacket.getPlayers());
+            LobbyScene.updatePlayerList(clientLobby);
         }
     }
 
