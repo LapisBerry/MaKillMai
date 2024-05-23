@@ -3,6 +3,7 @@ package com.lapisberry.net;
 import com.lapisberry.game.controllers.GameController;
 import com.lapisberry.game.controllers.LobbyController;
 import com.lapisberry.net.packets.ClientPacket;
+import com.lapisberry.net.packets.JoinResponsePacket;
 import com.lapisberry.net.packets.ServerPacket;
 import com.lapisberry.utils.Config;
 
@@ -17,6 +18,7 @@ public class Server implements Runnable {
     private final ArrayList<ClientHandler> clientHandlers;
     private final LobbyController serverLobby;
     private final GameController serverGame;
+    private int clientIdCounter = 0;
 
     // Constructors
     public Server() {
@@ -41,7 +43,7 @@ public class Server implements Runnable {
         while (!serverSocket.isClosed()) {
             try {
                 Socket socket = serverSocket.accept();
-                ClientHandler clientHandler = new ClientHandler(this, socket);
+                ClientHandler clientHandler = new ClientHandler(this, socket, clientIdCounter++);
                 clientHandlers.add(clientHandler);
                 new Thread(clientHandler).start();
 
@@ -54,12 +56,6 @@ public class Server implements Runnable {
 
     public void processPacketFromClient(ClientHandler sender, ClientPacket packet) {
         System.out.println("Processing packet from " + sender.getSocket().getInetAddress().getHostAddress() + ": " + packet);
-    }
-
-    private void sendPacketToAllClients(ServerPacket packet) {
-        for (ClientHandler clientHandler : clientHandlers) {
-            clientHandler.sendPacketToClient(packet);
-        }
     }
 
     public void close() {

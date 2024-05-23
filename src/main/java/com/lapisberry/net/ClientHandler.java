@@ -1,6 +1,7 @@
 package com.lapisberry.net;
 
 import com.lapisberry.net.packets.ClientPacket;
+import com.lapisberry.net.packets.JoinResponsePacket;
 import com.lapisberry.net.packets.ServerPacket;
 
 import java.io.IOException;
@@ -12,13 +13,15 @@ public class ClientHandler implements Runnable {
     // Fields
     private final Server server;
     private final Socket socket;
+    private final int clientId;
     private ObjectOutputStream outputStream;
     private ObjectInputStream inputStream;
 
     // Constructors
-    public ClientHandler(Server server, Socket socket) {
+    public ClientHandler(Server server, Socket socket, int clientId) {
         this.server = server;
         this.socket = socket;
+        this.clientId = clientId;
         try {
             outputStream = new ObjectOutputStream(socket.getOutputStream());
             inputStream = new ObjectInputStream(socket.getInputStream());
@@ -30,6 +33,8 @@ public class ClientHandler implements Runnable {
     // Methods
     @Override
     public void run() {
+        // Send join response packet to client
+        sendPacketToClient(new JoinResponsePacket(clientId));
         new Thread(this::startListeningClientPacket, "Listening client packet thread").start();
     }
 
@@ -47,7 +52,7 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    public void sendPacketToClient(ServerPacket packet) {
+    private void sendPacketToClient(ServerPacket packet) {
         try {
             outputStream.writeObject(packet);
             outputStream.flush();
@@ -59,5 +64,9 @@ public class ClientHandler implements Runnable {
     // Getters Setters
     public Socket getSocket() {
         return socket;
+    }
+
+    public int getClientId() {
+        return clientId;
     }
 }

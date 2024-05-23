@@ -6,7 +6,7 @@ import java.io.Serializable;
 /**
  * The {@code ClientPacket} class is a packet sending from client to server.
  */
-public class ClientPacket implements Serializable {
+public abstract class ClientPacket implements Serializable {
     @Serial
-    private static final long serialVersionUID = -2286074370601221667L;
+    private static final long serialVersionUID = -2245864016631194615L;
 }
