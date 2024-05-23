@@ -3,8 +3,6 @@ package com.lapisberry.net;
 import com.lapisberry.game.controllers.GameController;
 import com.lapisberry.game.controllers.LobbyController;
 import com.lapisberry.net.packets.ClientPacket;
-import com.lapisberry.net.packets.JoinResponsePacket;
-import com.lapisberry.net.packets.ServerPacket;
 import com.lapisberry.utils.Config;
 
 import java.io.IOException;
@@ -64,5 +62,9 @@ public class Server implements Runnable {
         } catch (IOException e) {
             System.out.println("Server cannot be closed.");
         }
+    }
+
+    public void removeClientHandler(ClientHandler clientHandler) {
+        clientHandlers.remove(clientHandler);
     }
 }

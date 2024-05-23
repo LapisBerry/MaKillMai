@@ -50,6 +50,7 @@ public class ClientHandler implements Runnable {
                 System.out.println("Packet from client cannot be read.");
             }
         }
+        close();
     }
 
     private void sendPacketToClient(ServerPacket packet) {
@@ -59,6 +60,17 @@ public class ClientHandler implements Runnable {
         } catch (IOException e) {
             System.out.println("Packet cannot be sent to client.");
         }
+    }
+
+    public void close() {
+        try {
+            socket.close();
+            outputStream.close();
+            inputStream.close();
+        } catch (IOException e) {
+            System.out.println("ClientHandler cannot be closed.");
+        }
+        server.removeClientHandler(this);
     }
 
     // Getters Setters
