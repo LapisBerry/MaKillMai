@@ -3,6 +3,9 @@ package com.lapisberry.net;
 import com.lapisberry.game.controllers.GameController;
 import com.lapisberry.game.controllers.LobbyController;
 import com.lapisberry.net.packets.ClientPacket;
+import com.lapisberry.net.packets.JoinRequestPacket;
+import com.lapisberry.net.packets.LobbyPacket;
+import com.lapisberry.net.packets.ServerPacket;
 import com.lapisberry.utils.Config;
 
 import java.io.IOException;
@@ -52,8 +55,18 @@ public class Server implements Runnable {
         }
     }
 
+    public void sendPacketToAllClients(ServerPacket packet) {
+        for (ClientHandler clientHandler : clientHandlers) {
+            clientHandler.sendPacketToClient(packet);
+        }
+    }
+
     public void processPacketFromClient(ClientHandler sender, ClientPacket packet) {
         System.out.println("Processing packet from " + sender.getSocket().getInetAddress().getHostAddress() + ": " + packet);
+        if (packet instanceof JoinRequestPacket joinRequestPacket) {
+            serverLobby.addPlayer(sender.getClientId(), joinRequestPacket.getUsername());
+            sendPacketToAllClients(new LobbyPacket(serverLobby));
+        }
     }
 
     public void close() {
@@ -66,5 +79,7 @@ public class Server implements Runnable {
 
     public void removeClientHandler(ClientHandler clientHandler) {
         clientHandlers.remove(clientHandler);
+        serverLobby.removePlayer(clientHandler.getClientId());
+        sendPacketToAllClients(new LobbyPacket(serverLobby));
     }
 }

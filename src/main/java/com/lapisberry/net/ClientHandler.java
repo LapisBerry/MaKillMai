@@ -53,7 +53,7 @@ public class ClientHandler implements Runnable {
         close();
     }
 
-    private void sendPacketToClient(ServerPacket packet) {
+    public void sendPacketToClient(ServerPacket packet) {
         try {
             outputStream.writeObject(packet);
             outputStream.flush();

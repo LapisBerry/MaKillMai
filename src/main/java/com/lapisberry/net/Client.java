@@ -3,7 +3,6 @@ package com.lapisberry.net;
 import com.lapisberry.game.controllers.GameController;
 import com.lapisberry.game.controllers.LobbyController;
 import com.lapisberry.net.packets.ClientPacket;
-import com.lapisberry.net.packets.JoinRequestPacket;
 import com.lapisberry.net.packets.JoinResponsePacket;
 import com.lapisberry.net.packets.ServerPacket;
 import com.lapisberry.utils.Config;
@@ -63,17 +62,13 @@ public class Client implements Runnable {
         }
     }
 
-    private void sendPacketToServer(ClientPacket packet) {
+    public void sendPacketToServer(ClientPacket packet) {
         try {
             outputStream.writeObject(packet);
             outputStream.flush();
         } catch (IOException e) {
             System.out.println("Packet cannot be sent to server.");
         }
-    }
-
-    public void sendJoinRequestPacket(String username) {
-        sendPacketToServer(new JoinRequestPacket(username));
     }
 
     public void close() {

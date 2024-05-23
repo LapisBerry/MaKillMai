@@ -2,6 +2,7 @@ package com.lapisberry.gui.scenes;
 
 import com.lapisberry.Main;
 import com.lapisberry.gui.MediaController;
+import com.lapisberry.net.packets.JoinRequestPacket;
 import com.lapisberry.utils.exceptions.ConnectionRefusedException;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -94,13 +95,14 @@ public class JoinScene extends Scene {
                 try {
                     // Create client using host IP address, might throw ConnectionRefusedException
                     Main.createClient(ipAddress.getText());
-                    // Send join request packet to server
-                    Main.getClient().sendJoinRequestPacket(username.getText());
-                    // Go to lobby scene
-                    Main.goToLobbyScene();
                 } catch (ConnectionRefusedException ex) {
                     alertContainer.alert("Connection refused.");
+                    return;
                 }
+                // Send join request packet to server
+                Main.getClient().sendPacketToServer(new JoinRequestPacket(username.getText()));
+                // Go to lobby scene
+                Main.goToLobbyScene();
             });
         }
     }
