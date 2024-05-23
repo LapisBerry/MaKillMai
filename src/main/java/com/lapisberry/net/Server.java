@@ -7,7 +7,6 @@ import com.lapisberry.net.packets.JoinRequestPacket;
 import com.lapisberry.net.packets.LobbyPacket;
 import com.lapisberry.net.packets.ServerPacket;
 import com.lapisberry.utils.Config;
-import javafx.util.Pair;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -66,9 +65,7 @@ public class Server implements Runnable {
         System.out.println("Processing packet from " + sender.getSocket().getInetAddress().getHostAddress() + ": " + packet);
         if (packet instanceof JoinRequestPacket joinRequestPacket) {
             serverLobby.addPlayer(sender.getClientId(), joinRequestPacket.getUsername());
-            // Have to make a copy of the players list to avoid shared reference
-            ArrayList<Pair<Integer, String>> players = new ArrayList<>(serverLobby.getPlayers());
-            sendPacketToAllClients(new LobbyPacket(players));
+            sendPacketToAllClients(new LobbyPacket(serverLobby.getPlayers()));
         }
     }
 
@@ -83,8 +80,6 @@ public class Server implements Runnable {
     public void removeClientHandler(ClientHandler clientHandler) {
         clientHandlers.remove(clientHandler);
         serverLobby.removePlayer(clientHandler.getClientId());
-        // Have to make a copy of the players list to avoid shared reference
-        ArrayList<Pair<Integer, String>> players = new ArrayList<>(serverLobby.getPlayers());
-        sendPacketToAllClients(new LobbyPacket(players));
+        sendPacketToAllClients(new LobbyPacket(serverLobby.getPlayers()));
     }
 }

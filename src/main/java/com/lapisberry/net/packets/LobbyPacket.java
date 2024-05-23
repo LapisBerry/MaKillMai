@@ -17,7 +17,8 @@ public class LobbyPacket extends ServerPacket implements Serializable {
 
     // Constructors
     public LobbyPacket(ArrayList<Pair<Integer, String>> players) {
-        this.players = players;
+        // deep copy
+        this.players = new ArrayList<>(players);
     }
 
     // Methods
