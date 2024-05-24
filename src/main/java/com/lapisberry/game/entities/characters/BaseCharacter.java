@@ -2,7 +2,9 @@ package com.lapisberry.game.entities.characters;
 
 import com.lapisberry.utils.Config;
 
-public abstract class BaseCharacter {
+import java.io.Serializable;
+
+public abstract class BaseCharacter implements Serializable {
     // Fields
     private final String name;
     private final String abilityDescription;
