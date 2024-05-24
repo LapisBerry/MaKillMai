@@ -2,6 +2,7 @@ package com.lapisberry;
 
 import com.lapisberry.gui.scenes.JoinScene;
 import com.lapisberry.gui.scenes.LobbyScene;
+import com.lapisberry.gui.scenes.ServerDisconnectScene;
 import com.lapisberry.net.Client;
 import com.lapisberry.net.Server;
 import javafx.application.Application;
@@ -24,6 +25,10 @@ public class Main extends Application {
 
     public static void goToLobbyScene() {
         primaryStage.setScene(new LobbyScene());
+    }
+
+    public static void goToServerDisconnectScene() {
+        primaryStage.setScene(new ServerDisconnectScene());
     }
 
     public static void createServer() {
