@@ -1,14 +1,13 @@
 package com.lapisberry.net.packets;
 
 import java.io.Serial;
-import java.io.Serializable;
 
 /**
  * The {@code JoinRequestPacket} class is the first packet sending from client to server to join the server.
  */
-public class JoinRequestPacket extends ClientPacket implements Serializable {
+public class JoinRequestPacket extends ClientPacket {
     @Serial
-    private static final long serialVersionUID = 8969814260705260127L;
+    private static final long serialVersionUID = -5861022911777551130L;
     // Fields
     private final String username;
 

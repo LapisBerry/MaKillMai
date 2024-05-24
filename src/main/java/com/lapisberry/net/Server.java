@@ -2,10 +2,7 @@ package com.lapisberry.net;
 
 import com.lapisberry.game.controllers.GameController;
 import com.lapisberry.game.controllers.LobbyController;
-import com.lapisberry.net.packets.ClientPacket;
-import com.lapisberry.net.packets.JoinRequestPacket;
-import com.lapisberry.net.packets.LobbyPacket;
-import com.lapisberry.net.packets.ServerPacket;
+import com.lapisberry.net.packets.*;
 import com.lapisberry.utils.Config;
 
 import java.io.IOException;

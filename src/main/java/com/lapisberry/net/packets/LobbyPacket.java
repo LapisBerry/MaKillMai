@@ -3,15 +3,14 @@ package com.lapisberry.net.packets;
 import javafx.util.Pair;
 
 import java.io.Serial;
-import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * The {@code LobbyPacket} class is the packet sending from server to client to update the lobby.
  */
-public class LobbyPacket extends ServerPacket implements Serializable {
+public class LobbyPacket extends ServerPacket {
     @Serial
-    private static final long serialVersionUID = 5601782103675952467L;
+    private static final long serialVersionUID = 5742319752401732979L;
     // Fields
     private final ArrayList<Pair<Integer, String>> players;
 
