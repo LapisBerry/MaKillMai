@@ -10,8 +10,11 @@ Turn Based, Dice, Board game (Bang! lookalike).
 For more information check out `ducumentation` folder.
 
 ## Contribution 📝
+I need someone who can `draw character` for this game
+
 I use [JavaFX][JavaFX-url] because I learn that from school. I don't have the plan to change to [libGDX][libGDX-url] and probably will never change it.
 
+## Backstory 🗣️
 I made this game because I want to learn about server socket and Server-Client Architecture.
 
 "It would be fun if you wanna help me finish this game." - @LapisBerry 😍
