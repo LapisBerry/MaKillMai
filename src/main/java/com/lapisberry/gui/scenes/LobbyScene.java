@@ -33,6 +33,8 @@ public class LobbyScene extends Scene {
         Platform.runLater(() -> {
             PlayerPanel.PlayerList.vbox.getChildren().clear();
             lobbyController.getPlayers().forEach(pair -> addPlayer(pair.getValue()));
+            if (Main.getClient().getClientId() != lobbyController.getPlayers().getFirst().getKey()) startButton.setDisable(true);
+            else startButton.setDisable(lobbyController.getPlayers().size() < 4 || lobbyController.getPlayers().size() > 8);
         });
     }
 
@@ -127,6 +129,7 @@ public class LobbyScene extends Scene {
             setOnMouseExited(e -> setBackground(new Background(new BackgroundFill(Color.valueOf("44FF02"), new CornerRadii(40), null))));
             setOnMousePressed(e -> setBackground(new Background(new BackgroundFill(Color.valueOf("2b850c"), new CornerRadii(40), null))));
             setOnMouseReleased(e -> setBackground(new Background(new BackgroundFill(Color.valueOf("44FF02"), new CornerRadii(40), null))));
+            setOnAction(e -> System.out.println("Start Game!"));
         }
     }
 }
