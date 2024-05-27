@@ -18,23 +18,38 @@ import javafx.scene.text.TextAlignment;
 
 import static com.lapisberry.gui.FontPreloader.Inter_Black;
 import static com.lapisberry.gui.FontPreloader.Inter_SemiBold;
+import static com.lapisberry.utils.RoleCountHelper.*;
 
 public class LobbyScene extends Scene {
     private static final Title title = new Title("Lobby");
     private static final PlayerPanel playerPanel = new PlayerPanel();
     private static final StartButton startButton = new StartButton("Start Game");
     private static final Container container = new Container(title, playerPanel, startButton);
+    private static final RoleCounterContainer roleCounterContainer = new RoleCounterContainer();
 
     public LobbyScene() {
-        super(new StackPane(container), Main.getPrimaryStage().getScene().getWidth(), Main.getPrimaryStage().getScene().getHeight());
+        super(new StackPane(roleCounterContainer, container), Main.getPrimaryStage().getScene().getWidth(), Main.getPrimaryStage().getScene().getHeight());
     }
 
     public static void updatePlayerList(LobbyController lobbyController) {
         Platform.runLater(() -> {
+            // Update PlayerList
             PlayerPanel.PlayerList.vbox.getChildren().clear();
             lobbyController.getPlayers().forEach(pair -> addPlayer(pair.getValue()));
-            if (Main.getClient().getClientId() != lobbyController.getPlayers().getFirst().getKey()) startButton.setDisable(true);
-            else startButton.setDisable(lobbyController.getPlayers().size() < 4 || lobbyController.getPlayers().size() > 8);
+
+            // Update RoleCounter
+            final int playerCount = lobbyController.getPlayers().size();
+            final int emperors = getEmperors(playerCount);
+            final int royalists = getRoyalists(playerCount);
+            final int rebels = getRebels(playerCount);
+            final int spies = getSpies(playerCount);
+            RoleCounterContainer.RoleBox.updateCounter(emperors, royalists, rebels, spies);
+
+            // Update StartButton
+            if (Main.getClient().getClientId() != lobbyController.getPlayers().getFirst().getKey())
+                startButton.setDisable(true);
+            else
+                startButton.setDisable(lobbyController.getPlayers().size() < 4 || lobbyController.getPlayers().size() > 8);
         });
     }
 
@@ -49,6 +64,57 @@ public class LobbyScene extends Scene {
             setMaxHeight(200);
             setAlignment(Pos.CENTER);
             setSpacing(17);
+        }
+    }
+
+    private static class RoleCounterContainer extends BorderPane {
+        private RoleCounterContainer() {
+            super();
+            setRight(new RoleBox());
+            setAlignment(getRight(), Pos.CENTER_RIGHT);
+            setPadding(new Insets(20, 20, 20, 20));
+        }
+
+        private static class RoleBox extends VBox {
+            private static final RoleText emperorCounter = new RoleText("Emperor: 0");
+            private static final RoleText royalistCounter = new RoleText("Royalist: 0");
+            private static final RoleText rebelCounter = new RoleText("Rebel: 0");
+            private static final RoleText spyCounter = new RoleText("Spy: 0");
+
+            private static void updateCounter(int emperor, int royalist, int rebel, int spy) {
+                Platform.runLater(() -> {
+                    emperorCounter.setText("Emperor: " + emperor);
+                    royalistCounter.setText("Royalist: " + royalist);
+                    rebelCounter.setText("Rebel: " + rebel);
+                    spyCounter.setText("Spy: " + spy);
+                });
+            }
+
+            private RoleBox() {
+                super();
+                getChildren().addAll(new SubTitle("Roles"), emperorCounter, royalistCounter, rebelCounter, spyCounter);
+                setMaxHeight(0);
+                setAlignment(Pos.CENTER);
+                setBackground(new Background(new BackgroundFill(Color.valueOf("D9D9D9"), new CornerRadii(20), null)));
+                setPadding(new Insets(15, 20, 15, 20));
+                setSpacing(10);
+            }
+
+            private static class SubTitle extends Text {
+                private SubTitle(String text) {
+                    super(text);
+                    setFont(Font.loadFont(Inter_SemiBold, 36));
+                    setTextAlignment(TextAlignment.CENTER);
+                }
+            }
+
+            private static class RoleText extends Text {
+                private RoleText(String text) {
+                    super(text);
+                    setFont(Font.loadFont(Inter_SemiBold, 20));
+                    setTextAlignment(TextAlignment.CENTER);
+                }
+            }
         }
     }
 
@@ -88,12 +154,12 @@ public class LobbyScene extends Scene {
             private PlayerList() {
                 super();
                 vbox.setMinWidth(336);
-                vbox.setBackground(new Background(new BackgroundFill(Color.valueOf("D9D9D9"), new CornerRadii(0), null)));
+                vbox.setBackground(Background.fill(Color.valueOf("D9D9D9")));
                 vbox.setAlignment(Pos.TOP_CENTER);
                 vbox.setSpacing(8);
                 setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
                 setMaxWidth(338);
-                setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, new CornerRadii(0), null)));
+                setBackground(Background.fill(Color.TRANSPARENT));
                 setContent(vbox);
             }
 
@@ -129,7 +195,16 @@ public class LobbyScene extends Scene {
             setOnMouseExited(e -> setBackground(new Background(new BackgroundFill(Color.valueOf("44FF02"), new CornerRadii(40), null))));
             setOnMousePressed(e -> setBackground(new Background(new BackgroundFill(Color.valueOf("2b850c"), new CornerRadii(40), null))));
             setOnMouseReleased(e -> setBackground(new Background(new BackgroundFill(Color.valueOf("44FF02"), new CornerRadii(40), null))));
-            setOnAction(e -> System.out.println("Start Game!"));
+            setOnAction(e -> {
+                new Thread(() -> {
+                    Platform.runLater(() -> setDisable(true));
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException ignored) {
+                    }
+                    Platform.runLater(() -> setDisable(false));
+                }, "temporary disable start button thread").start();
+            });
         }
     }
 }
