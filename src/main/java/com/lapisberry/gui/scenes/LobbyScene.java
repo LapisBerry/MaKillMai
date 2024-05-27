@@ -81,15 +81,6 @@ public class LobbyScene extends Scene {
             private static final RoleText rebelCounter = new RoleText("Rebel: 0");
             private static final RoleText spyCounter = new RoleText("Spy: 0");
 
-            private static void updateCounter(int emperor, int royalist, int rebel, int spy) {
-                Platform.runLater(() -> {
-                    emperorCounter.setText("Emperor: " + emperor);
-                    royalistCounter.setText("Royalist: " + royalist);
-                    rebelCounter.setText("Rebel: " + rebel);
-                    spyCounter.setText("Spy: " + spy);
-                });
-            }
-
             private RoleBox() {
                 super();
                 getChildren().addAll(new SubTitle("Roles"), emperorCounter, royalistCounter, rebelCounter, spyCounter);
@@ -98,6 +89,15 @@ public class LobbyScene extends Scene {
                 setBackground(new Background(new BackgroundFill(Color.valueOf("D9D9D9"), new CornerRadii(20), null)));
                 setPadding(new Insets(15, 20, 15, 20));
                 setSpacing(10);
+            }
+
+            private static void updateCounter(int emperor, int royalist, int rebel, int spy) {
+                Platform.runLater(() -> {
+                    emperorCounter.setText("Emperor: " + emperor);
+                    royalistCounter.setText("Royalist: " + royalist);
+                    rebelCounter.setText("Rebel: " + rebel);
+                    spyCounter.setText("Spy: " + spy);
+                });
             }
 
             private static class SubTitle extends Text {
@@ -195,16 +195,14 @@ public class LobbyScene extends Scene {
             setOnMouseExited(e -> setBackground(new Background(new BackgroundFill(Color.valueOf("44FF02"), new CornerRadii(40), null))));
             setOnMousePressed(e -> setBackground(new Background(new BackgroundFill(Color.valueOf("2b850c"), new CornerRadii(40), null))));
             setOnMouseReleased(e -> setBackground(new Background(new BackgroundFill(Color.valueOf("44FF02"), new CornerRadii(40), null))));
-            setOnAction(e -> {
-                new Thread(() -> {
-                    Platform.runLater(() -> setDisable(true));
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException ignored) {
-                    }
-                    Platform.runLater(() -> setDisable(false));
-                }, "temporary disable start button thread").start();
-            });
+            setOnAction(e -> new Thread(() -> {
+                Platform.runLater(() -> setDisable(true));
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ignored) {
+                }
+                Platform.runLater(() -> setDisable(false));
+            }, "temporary disable start button thread").start());
         }
     }
 }
