@@ -2,6 +2,7 @@ package com.lapisberry.gui.scenes;
 
 import com.lapisberry.Main;
 import com.lapisberry.game.controllers.LobbyController;
+import com.lapisberry.net.packets.PartyLeaderStartGamePacket;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -195,14 +196,21 @@ public class LobbyScene extends Scene {
             setOnMouseExited(e -> setBackground(new Background(new BackgroundFill(Color.valueOf("44FF02"), new CornerRadii(40), null))));
             setOnMousePressed(e -> setBackground(new Background(new BackgroundFill(Color.valueOf("2b850c"), new CornerRadii(40), null))));
             setOnMouseReleased(e -> setBackground(new Background(new BackgroundFill(Color.valueOf("44FF02"), new CornerRadii(40), null))));
-            setOnAction(e -> new Thread(() -> {
-                Platform.runLater(() -> setDisable(true));
+            setOnAction(e -> {
+                temporaryDisable();
+                Main.getClient().sendPacketToServer(new PartyLeaderStartGamePacket());
+            });
+        }
+
+        private void temporaryDisable() {
+            setDisable(true);
+            new Thread(() -> {
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException ignored) {
                 }
                 Platform.runLater(() -> setDisable(false));
-            }, "temporary disable start button thread").start());
+            }, "temporary disable start button thread").start();
         }
     }
 }
