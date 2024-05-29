@@ -2,10 +2,7 @@ package com.lapisberry.net;
 
 import com.lapisberry.game.controllers.GameController;
 import com.lapisberry.game.controllers.LobbyController;
-import com.lapisberry.net.packets.ClientPacket;
-import com.lapisberry.net.packets.JoinRequestPacket;
-import com.lapisberry.net.packets.LobbyPacket;
-import com.lapisberry.net.packets.ServerPacket;
+import com.lapisberry.net.packets.*;
 import com.lapisberry.utils.Config;
 
 import java.io.IOException;
@@ -66,6 +63,9 @@ public class Server implements Runnable {
         if (packet instanceof JoinRequestPacket joinRequestPacket) {
             serverLobby.addPlayer(sender.getClientId(), joinRequestPacket.getUsername());
             sendPacketToAllClients(new LobbyPacket(serverLobby.getPlayers()));
+        } else if (packet instanceof PartyLeaderStartGamePacket) {
+            serverLobby.setupShuffledPlayersAndShuffledCharacters();
+            sendPacketToAllClients(new ServerStartGamePacket(serverLobby.getShuffledPlayers(), serverLobby.getShuffledCharacters()));
         }
     }
 

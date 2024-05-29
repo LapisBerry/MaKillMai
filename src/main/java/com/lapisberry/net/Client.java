@@ -4,10 +4,7 @@ import com.lapisberry.Main;
 import com.lapisberry.game.controllers.GameController;
 import com.lapisberry.game.controllers.LobbyController;
 import com.lapisberry.gui.scenes.LobbyScene;
-import com.lapisberry.net.packets.ClientPacket;
-import com.lapisberry.net.packets.JoinResponsePacket;
-import com.lapisberry.net.packets.LobbyPacket;
-import com.lapisberry.net.packets.ServerPacket;
+import com.lapisberry.net.packets.*;
 import com.lapisberry.utils.Config;
 import com.lapisberry.utils.exceptions.ConnectionRefusedException;
 import javafx.application.Platform;
@@ -69,6 +66,8 @@ public class Client implements Runnable {
         } else if (packet instanceof LobbyPacket lobbyPacket) {
             clientLobby.setPlayers(lobbyPacket.getPlayers());
             LobbyScene.updatePlayerList(clientLobby);
+        } else if (packet instanceof ServerStartGamePacket) {
+            // TODO: Implement this packet
         }
     }
 
