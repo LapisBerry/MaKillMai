@@ -58,15 +58,45 @@ public class Server implements Runnable {
         }
     }
 
+    /** Sends each connected client a {@link GameStatePacket} personalised to hide opponents' roles. */
+    public void broadcastGameState() {
+        for (ClientHandler clientHandler : clientHandlers) {
+            clientHandler.sendPacketToClient(GameStatePacket.from(serverGame, clientHandler.getClientId()));
+        }
+    }
+
     public void processPacketFromClient(ClientHandler sender, ClientPacket packet) {
         System.out.println("Processing packet from " + sender.getSocket().getInetAddress().getHostAddress() + ": " + packet);
+
         if (packet instanceof JoinRequestPacket joinRequestPacket) {
             serverLobby.addPlayer(sender.getClientId(), joinRequestPacket.getUsername());
             sendPacketToAllClients(new LobbyPacket(serverLobby.getPlayers()));
-        } else if (packet instanceof PartyLeaderStartGamePacket) {
-            serverLobby.setupShuffledPlayersAndShuffledCharacters();
-            sendPacketToAllClients(new ServerStartGamePacket(serverLobby.getShuffledPlayers(), serverLobby.getShuffledCharacters()));
+            return;
         }
+        if (packet instanceof PartyLeaderStartGamePacket) {
+            serverLobby.setupShuffledPlayersAndShuffledCharacters();
+            serverGame.startGame(serverLobby.getShuffledPlayers(), serverLobby.getShuffledCharacters());
+            broadcastGameState();
+            return;
+        }
+
+        // In-game actions
+        boolean changed = false;
+        if (packet instanceof RollDicePacket) {
+            changed = serverGame.handleRoll(sender.getClientId());
+        } else if (packet instanceof ToggleDieLockPacket toggle) {
+            changed = serverGame.handleToggleLock(sender.getClientId(), toggle.getDieIndex());
+        } else if (packet instanceof EndRollingPacket) {
+            changed = serverGame.handleEndRolling(sender.getClientId());
+        } else if (packet instanceof ResolveDiePacket resolve) {
+            changed = serverGame.handleResolveDie(sender.getClientId(), resolve.getDieIndex(), resolve.getTargetClientId());
+        } else if (packet instanceof UsePureMagicPacket pureMagic) {
+            changed = serverGame.handleUsePureMagic(sender.getClientId(), pureMagic.isAccept());
+        } else if (packet instanceof EndTurnPacket) {
+            changed = serverGame.handleEndTurn(sender.getClientId());
+        }
+
+        if (changed) broadcastGameState();
     }
 
     public void close() {

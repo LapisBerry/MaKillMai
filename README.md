@@ -1,5 +1,5 @@
 # MaKillMai 🔥
-Online turn based board game 4-10 persons (Bang! lookalike)
+Online turn based board game 4-8 persons (Bang! lookalike)
 
 ## About 😄
 This game is called _"MaKillMai"_

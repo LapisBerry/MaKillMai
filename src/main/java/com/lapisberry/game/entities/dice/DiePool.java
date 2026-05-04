@@ -1,61 +1,67 @@
 package com.lapisberry.game.entities.dice;
 
+import com.lapisberry.utils.Config;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class DiePool implements Serializable {
     @Serial
-    private static final long serialVersionUID = -8762762137011732365L;
+    private static final long serialVersionUID = 1L;
+
     // Fields
     private final ArrayList<Die> dice;
 
     // Constructors
     public DiePool() {
-        this.dice = new ArrayList<>(Arrays.asList(new Die(), new Die(), new Die(), new Die(), new Die()));
+        this.dice = new ArrayList<>(Config.DICE_PER_PLAYER);
+        for (int i = 0; i < Config.DICE_PER_PLAYER; i++) {
+            this.dice.add(new Die());
+        }
     }
 
-    // Deep copy constructors
-    public DiePool(DiePool oldDiePool) {
-        this.dice = new ArrayList<>();
-        for (Die oldDie : oldDiePool.dice) {
-            this.dice.add(new Die(oldDie));
+    // Deep copy constructor
+    public DiePool(DiePool other) {
+        this.dice = new ArrayList<>(other.dice.size());
+        for (Die d : other.dice) {
+            this.dice.add(new Die(d));
         }
     }
 
     // Methods
-    public void rollAllUnlockDice() {
+    public void rollAllUnlockedDice() {
         for (Die die : dice) {
             if (!die.isLocked()) die.roll();
         }
     }
 
-    public void lockDie(int index) {
-        dice.get(index).setLocked(true);
-    }
-
-    public void unlockDie(int index) {
-        dice.get(index).setLocked(false);
-    }
-
-    public void makeDieUnlockable(int index) {
-        dice.get(index).setUnlockable(true);
-    }
-
-    public void makeDieUnunlockable(int index) {
-        dice.get(index).setUnlockable(false);
-    }
-
-    public void resetDiePool() {
+    public void resetForNewTurn() {
         for (Die die : dice) {
-            die.setUnlockable(true);
             die.setLocked(false);
-            die.setTargetCharacter(null);
+            die.setUnlockable(true);
+            die.setResolved(false);
+            die.roll();
         }
     }
 
-    // Getters Setters
+    public int countFace(DieFace face) {
+        int n = 0;
+        for (Die d : dice) {
+            if (d.getDieFace() == face) n++;
+        }
+        return n;
+    }
+
+    public int countUnresolvedFace(DieFace face) {
+        int n = 0;
+        for (Die d : dice) {
+            if (!d.isResolved() && d.getDieFace() == face) n++;
+        }
+        return n;
+    }
+
+    // Getters
     public ArrayList<Die> getDice() {
         return dice;
     }

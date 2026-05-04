@@ -1,5 +1,6 @@
 package com.lapisberry;
 
+import com.lapisberry.gui.scenes.GameScene;
 import com.lapisberry.gui.scenes.JoinScene;
 import com.lapisberry.gui.scenes.LobbyScene;
 import com.lapisberry.gui.scenes.ServerDisconnectScene;
@@ -25,6 +26,10 @@ public class Main extends Application {
 
     public static void goToLobbyScene() {
         primaryStage.setScene(new LobbyScene());
+    }
+
+    public static void goToGameScene() {
+        primaryStage.setScene(new GameScene());
     }
 
     public static void goToServerDisconnectScene() {

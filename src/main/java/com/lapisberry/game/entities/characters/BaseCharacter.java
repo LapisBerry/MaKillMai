@@ -2,9 +2,13 @@ package com.lapisberry.game.entities.characters;
 
 import com.lapisberry.utils.Config;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 public abstract class BaseCharacter implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     // Fields
     private final String name;
     private final String abilityDescription;
@@ -13,8 +17,6 @@ public abstract class BaseCharacter implements Serializable {
     private int hp;
     private int maxHp;
     private int rotPower;
-    private int reRollLeft;
-    private boolean isWantToUsePureMagic;
 
     // Constructor
     public BaseCharacter(String name, String abilityDescription, int hp) {
@@ -27,6 +29,35 @@ public abstract class BaseCharacter implements Serializable {
         this.rotPower = Config.DEFAULT_ROT_POWER;
     }
 
+    // Mutators
+    public void takeDamage(int amount) {
+        if (amount <= 0) return;
+        setHp(hp - amount);
+    }
+
+    public void heal(int amount) {
+        if (amount <= 0) return;
+        setHp(hp + amount);
+    }
+
+    public void addRot(int amount) {
+        rotPower = Math.max(0, rotPower + amount);
+    }
+
+    public void clearRot() {
+        rotPower = 0;
+    }
+
+    public boolean isAlive() {
+        return hp > 0;
+    }
+
+    public void increaseMaxHp(int delta) {
+        maxHp = Math.max(1, maxHp + delta);
+        hp = Math.min(hp + delta, maxHp);
+        if (hp < 0) hp = 0;
+    }
+
     // Getters Setters
     public String getName() {
         return name;
@@ -34,22 +65,6 @@ public abstract class BaseCharacter implements Serializable {
 
     public String getAbilityDescription() {
         return abilityDescription;
-    }
-
-    public boolean isWantToUsePureMagic() {
-        return isWantToUsePureMagic;
-    }
-
-    public void setWantToUsePureMagic(boolean wantToUsePureMagic) {
-        isWantToUsePureMagic = wantToUsePureMagic;
-    }
-
-    public int getReRollLeft() {
-        return reRollLeft;
-    }
-
-    public void setReRollLeft(int reRollLeft) {
-        this.reRollLeft = reRollLeft;
     }
 
     public int getDiceRequiredForPureMagic() {
@@ -61,7 +76,7 @@ public abstract class BaseCharacter implements Serializable {
     }
 
     public void setRotPower(int rotPower) {
-        this.rotPower = rotPower;
+        this.rotPower = Math.max(0, rotPower);
     }
 
     public int getMaxHp() {

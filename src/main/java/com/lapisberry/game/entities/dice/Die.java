@@ -1,80 +1,78 @@
 package com.lapisberry.game.entities.dice;
 
-import com.lapisberry.game.entities.characters.BaseCharacter;
 import com.lapisberry.utils.Randomizer;
 
 import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * The {@code Dice} class
- * <p>
- * This class can roll dice and show what is the diceFace of the dice.
- *
- * @author LapisBerry
+ * A single six-faced die. {@code isLocked} means the player chose to keep this
+ * face on the next reroll. {@code isUnlockable} is {@code false} for faces
+ * the player is forbidden from rerolling (notably STONE_SUPPRESSOR).
  */
 public class Die implements Serializable {
     @Serial
-    private static final long serialVersionUID = -6996645007181018587L;
+    private static final long serialVersionUID = 1L;
+
     // Fields
-    private DieFace diceFace;
-    private boolean isLocked;
-    private boolean isUnlockable;
-    private BaseCharacter targetCharacter;
+    private DieFace dieFace;
+    private boolean locked;
+    private boolean unlockable;
+    private boolean resolved;
 
     // Constructors
     public Die() {
         roll();
-        isLocked = false;
-        isUnlockable = true;
-        targetCharacter = null;
+        this.locked = false;
+        this.unlockable = true;
+        this.resolved = false;
     }
 
-    // Copy constructors
-    public Die(Die die) {
-        this.diceFace = die.diceFace;
-        this.isLocked = die.isLocked;
-        this.isUnlockable = die.isUnlockable;
-        this.targetCharacter = die.targetCharacter;
+    // Copy constructor
+    public Die(Die other) {
+        this.dieFace = other.dieFace;
+        this.locked = other.locked;
+        this.unlockable = other.unlockable;
+        this.resolved = other.resolved;
     }
 
     // Methods
     public void roll() {
         int index = Randomizer.getRandomInt(DieFace.values().length);
-        diceFace = DieFace.values()[index];
+        this.dieFace = DieFace.values()[index];
     }
 
     // Getters Setters
-    public DieFace getDiceFace() {
-        return diceFace;
+    public DieFace getDieFace() {
+        return dieFace;
     }
 
-    public void setDiceFace(DieFace diceFace) {
-        this.diceFace = diceFace;
-    }
-
-    public BaseCharacter getTargetCharacter() {
-        return targetCharacter;
-    }
-
-    public void setTargetCharacter(BaseCharacter targetCharacter) {
-        this.targetCharacter = targetCharacter;
+    public void setDieFace(DieFace dieFace) {
+        this.dieFace = dieFace;
     }
 
     public boolean isLocked() {
-        return isLocked;
+        return locked;
     }
 
     public void setLocked(boolean locked) {
-        if (!locked && !isUnlockable) return;
-        isLocked = locked;
+        if (!locked && !unlockable) return;
+        this.locked = locked;
     }
 
     public boolean isUnlockable() {
-        return isUnlockable;
+        return unlockable;
     }
 
     public void setUnlockable(boolean unlockable) {
-        isUnlockable = unlockable;
+        this.unlockable = unlockable;
+    }
+
+    public boolean isResolved() {
+        return resolved;
+    }
+
+    public void setResolved(boolean resolved) {
+        this.resolved = resolved;
     }
 }

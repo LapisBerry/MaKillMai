@@ -1,8 +1,8 @@
 package com.lapisberry.net;
 
 import com.lapisberry.Main;
-import com.lapisberry.game.controllers.GameController;
 import com.lapisberry.game.controllers.LobbyController;
+import com.lapisberry.gui.scenes.GameScene;
 import com.lapisberry.gui.scenes.LobbyScene;
 import com.lapisberry.net.packets.*;
 import com.lapisberry.utils.Config;
@@ -20,7 +20,7 @@ public class Client implements Runnable {
     private final ObjectInputStream inputStream;
     private final ObjectOutputStream outputStream;
     private final LobbyController clientLobby;
-    private final GameController clientGame;
+    private GameStatePacket latestGameState;
     private int clientId;
 
     // Constructors
@@ -34,7 +34,6 @@ public class Client implements Runnable {
             throw new ConnectionRefusedException("Connection refused.");
         }
         clientLobby = new LobbyController();
-        clientGame = new GameController();
     }
 
     // Methods
@@ -66,8 +65,13 @@ public class Client implements Runnable {
         } else if (packet instanceof LobbyPacket lobbyPacket) {
             clientLobby.setPlayers(lobbyPacket.getPlayers());
             LobbyScene.updatePlayerList(clientLobby);
-        } else if (packet instanceof ServerStartGamePacket) {
-            // TODO: Implement this packet
+        } else if (packet instanceof GameStatePacket statePacket) {
+            boolean firstState = (latestGameState == null);
+            latestGameState = statePacket;
+            Platform.runLater(() -> {
+                if (firstState) Main.goToGameScene();
+                GameScene.applyState(statePacket);
+            });
         }
     }
 
@@ -97,5 +101,9 @@ public class Client implements Runnable {
 
     public void setClientId(int clientId) {
         this.clientId = clientId;
+    }
+
+    public GameStatePacket getLatestGameState() {
+        return latestGameState;
     }
 }
