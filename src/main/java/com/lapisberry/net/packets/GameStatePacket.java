@@ -1,6 +1,7 @@
 package com.lapisberry.net.packets;
 
 import com.lapisberry.game.controllers.GameController;
+import com.lapisberry.game.entities.characters.SlabTheKiller;
 import com.lapisberry.game.entities.dice.Die;
 import com.lapisberry.game.entities.dice.DieFace;
 import com.lapisberry.game.entities.players.Player;
@@ -9,6 +10,7 @@ import com.lapisberry.game.entities.players.Role;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Per-recipient snapshot of the live game. Built by the server with
@@ -79,6 +81,13 @@ public class GameStatePacket extends ServerPacket {
     private final int rotPool;
     private final GameController.Phase phase;
     private final Role winningRole; // non-null when phase == GAME_OVER
+    private final HashMap<Integer, ArrayList<Integer>> validTargetsByDieIndex;
+    private final boolean slabAbilityAvailable;
+    private final int pendingDamageTargetClientId; // -1 when none pending
+    private final int pendingDamageSourceClientId;
+    private final int pendingDamageAmount;
+    private final boolean pendingDamageCanTakeRot;
+    private final boolean pendingDamageCanDiscardRot;
 
     public GameStatePacket(ArrayList<PlayerView> players,
                            ArrayList<DieView> dice,
@@ -87,7 +96,14 @@ public class GameStatePacket extends ServerPacket {
                            int rollsLeft,
                            int rotPool,
                            GameController.Phase phase,
-                           Role winningRole) {
+                           Role winningRole,
+                           HashMap<Integer, ArrayList<Integer>> validTargetsByDieIndex,
+                           boolean slabAbilityAvailable,
+                           int pendingDamageTargetClientId,
+                           int pendingDamageSourceClientId,
+                           int pendingDamageAmount,
+                           boolean pendingDamageCanTakeRot,
+                           boolean pendingDamageCanDiscardRot) {
         this.players = players;
         this.dice = dice;
         this.recipientClientId = recipientClientId;
@@ -96,6 +112,13 @@ public class GameStatePacket extends ServerPacket {
         this.rotPool = rotPool;
         this.phase = phase;
         this.winningRole = winningRole;
+        this.validTargetsByDieIndex = validTargetsByDieIndex;
+        this.slabAbilityAvailable = slabAbilityAvailable;
+        this.pendingDamageTargetClientId = pendingDamageTargetClientId;
+        this.pendingDamageSourceClientId = pendingDamageSourceClientId;
+        this.pendingDamageAmount = pendingDamageAmount;
+        this.pendingDamageCanTakeRot = pendingDamageCanTakeRot;
+        this.pendingDamageCanDiscardRot = pendingDamageCanDiscardRot;
     }
 
     public static GameStatePacket from(GameController gc, int recipientClientId) {
@@ -121,9 +144,21 @@ public class GameStatePacket extends ServerPacket {
         for (Die d : gc.getDiePool().getDice()) {
             dice.add(new DieView(d.getDieFace(), d.isLocked(), d.isUnlockable(), d.isResolved()));
         }
+        HashMap<Integer, ArrayList<Integer>> validTargets = new HashMap<>(gc.computeValidTargetIdsByDieIndex());
+        Player current = gc.currentPlayer();
+        boolean slabReady = current != null
+                && current.getCharacter() instanceof SlabTheKiller slab
+                && !slab.isAbilityUsedThisTurn();
+        GameController.PendingDamage pd = gc.getPendingDamage();
+        int pdTarget = pd != null ? pd.targetClientId : -1;
+        int pdSource = pd != null ? pd.sourceClientId : -1;
+        int pdAmount = pd != null ? pd.amount : 0;
+        boolean pdTakeRot = pd != null && pd.canTakeRot;
+        boolean pdDiscardRot = pd != null && pd.canDiscardRot;
         return new GameStatePacket(views, dice, recipientClientId,
                 gc.getCurrentTurnClientId(), gc.getRollsLeft(), gc.getRotPool(),
-                gc.getPhase(), gc.getWinningRole());
+                gc.getPhase(), gc.getWinningRole(), validTargets, slabReady,
+                pdTarget, pdSource, pdAmount, pdTakeRot, pdDiscardRot);
     }
 
     // Getters
@@ -135,6 +170,13 @@ public class GameStatePacket extends ServerPacket {
     public int getRotPool() { return rotPool; }
     public GameController.Phase getPhase() { return phase; }
     public Role getWinningRole() { return winningRole; }
+    public HashMap<Integer, ArrayList<Integer>> getValidTargetsByDieIndex() { return validTargetsByDieIndex; }
+    public boolean isSlabAbilityAvailable() { return slabAbilityAvailable; }
+    public int getPendingDamageTargetClientId() { return pendingDamageTargetClientId; }
+    public int getPendingDamageSourceClientId() { return pendingDamageSourceClientId; }
+    public int getPendingDamageAmount() { return pendingDamageAmount; }
+    public boolean isPendingDamageCanTakeRot() { return pendingDamageCanTakeRot; }
+    public boolean isPendingDamageCanDiscardRot() { return pendingDamageCanDiscardRot; }
 
     @Override
     public String toString() {

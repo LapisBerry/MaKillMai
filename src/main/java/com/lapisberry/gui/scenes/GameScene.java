@@ -4,13 +4,17 @@ import com.lapisberry.Main;
 import com.lapisberry.game.controllers.GameController;
 import com.lapisberry.game.entities.dice.DieFace;
 import com.lapisberry.game.entities.players.Role;
+import com.lapisberry.net.packets.DamageResponsePacket;
 import com.lapisberry.net.packets.EndRollingPacket;
 import com.lapisberry.net.packets.EndTurnPacket;
 import com.lapisberry.net.packets.GameStatePacket;
 import com.lapisberry.net.packets.ResolveDiePacket;
 import com.lapisberry.net.packets.RollDicePacket;
 import com.lapisberry.net.packets.ToggleDieLockPacket;
+import com.lapisberry.net.packets.KitDiscardPacket;
+import com.lapisberry.net.packets.SidHealPacket;
 import com.lapisberry.net.packets.UsePureMagicPacket;
+import com.lapisberry.net.packets.UseSlabAbilityPacket;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -28,9 +32,7 @@ import javafx.scene.text.Font;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static com.lapisberry.gui.FontPreloader.Inter_Bold;
 import static com.lapisberry.gui.FontPreloader.Inter_Regular;
@@ -50,6 +52,9 @@ public class GameScene extends Scene {
 
     private static GameStatePacket lastState;
     private static Integer pendingDieIndexForTarget;
+    private static boolean slabComboMode;
+    private static Integer slabBeerIdx;
+    private static Integer slabAttackIdx;
 
     static {
         opponentsRow.setAlignment(Pos.CENTER);
@@ -90,6 +95,9 @@ public class GameScene extends Scene {
             lastState = state;
             // If a different die now demands targeting, drop the stale picker.
             pendingDieIndexForTarget = null;
+            slabComboMode = false;
+            slabBeerIdx = null;
+            slabAttackIdx = null;
             renderOpponents(state);
             renderSelf(state);
             renderDiceTray(state);
@@ -105,10 +113,16 @@ public class GameScene extends Scene {
     private static void renderHeader(GameStatePacket state) {
         GameStatePacket.PlayerView current = findById(state, state.getCurrentTurnClientId());
         String currentName = current != null ? current.playerName : "(none)";
+        GameStatePacket.PlayerView pendingTarget = state.getPendingDamageTargetClientId() >= 0
+                ? findById(state, state.getPendingDamageTargetClientId()) : null;
+        String pendingTargetName = pendingTarget != null ? pendingTarget.playerName : "?";
         String phaseText = switch (state.getPhase()) {
+            case AWAITING_SID_HEAL -> "Sid Ketchum — " + currentName + " picks who to heal";
             case ROLLING -> "Rolling — " + currentName + " (rolls left: " + state.getRollsLeft() + ")";
             case AWAITING_PURE_MAGIC -> "Pure Magic — " + currentName + " must decide";
             case RESOLVING -> "Resolving — " + currentName;
+            case AWAITING_DAMAGE_RESPONSE -> "Damage incoming — " + pendingTargetName + " must respond";
+            case AWAITING_KIT_DISCARD -> "Kit Carlson — " + currentName + " picks rot to discard";
             case TURN_OVER -> "End of turn — " + currentName;
             case GAME_OVER -> "Game Over";
             case WAITING_FOR_START -> "Waiting...";
@@ -185,7 +199,9 @@ public class GameScene extends Scene {
     private static Button dieButton(int index, GameStatePacket.DieView dv,
                                     GameStatePacket state, boolean isMyTurn) {
         Button b = new Button(dieFaceShort(dv.face));
-        b.setFont(Font.loadFont(Inter_Bold, 18));
+        // Inter lacks the symbol glyphs — Segoe UI Symbol ships with Windows
+        // and covers all five die faces.
+        b.setFont(Font.font("Segoe UI Symbol", javafx.scene.text.FontWeight.BOLD, 18));
         b.setMinSize(80, 80);
 
         String bg;
@@ -196,6 +212,27 @@ public class GameScene extends Scene {
 
         if (isMyTurn && state.getPhase() == GameController.Phase.ROLLING && dv.unlockable && !dv.resolved) {
             b.setOnAction(e -> Main.getClient().sendPacketToServer(new ToggleDieLockPacket(index)));
+        } else if (isMyTurn && slabComboMode && !dv.resolved
+                && (dv.face == DieFace.ATTACK_1 || dv.face == DieFace.ATTACK_2 || dv.face == DieFace.HEALTH_POTION)) {
+            if (dv.face == DieFace.HEALTH_POTION) {
+                b.setOnAction(e -> {
+                    slabBeerIdx = (slabBeerIdx != null && slabBeerIdx == index) ? null : index;
+                    renderActions(state);
+                    renderTargetPicker(state);
+                });
+                if (slabBeerIdx != null && slabBeerIdx == index) {
+                    b.setBackground(new Background(new BackgroundFill(Color.valueOf("66D9EF"), new CornerRadii(10), null)));
+                }
+            } else {
+                b.setOnAction(e -> {
+                    slabAttackIdx = (slabAttackIdx != null && slabAttackIdx == index) ? null : index;
+                    renderActions(state);
+                    renderTargetPicker(state);
+                });
+                if (slabAttackIdx != null && slabAttackIdx == index) {
+                    b.setBackground(new Background(new BackgroundFill(Color.valueOf("F92672"), new CornerRadii(10), null)));
+                }
+            }
         } else if (isMyTurn && state.getPhase() == GameController.Phase.RESOLVING && !dv.resolved
                 && (dv.face == DieFace.ATTACK_1 || dv.face == DieFace.ATTACK_2 || dv.face == DieFace.HEALTH_POTION)) {
             b.setOnAction(e -> {
@@ -208,14 +245,22 @@ public class GameScene extends Scene {
         return b;
     }
 
+    // Glyphs built from explicit code points so they survive any source-file
+    // encoding mishap (Windows javac defaults to Cp1252 unless told otherwise).
+    private static final String GLYPH_SWORDS = String.valueOf((char) 0x2694);   // crossed swords
+    private static final String GLYPH_HEART = String.valueOf((char) 0x2665);    // black heart suit
+    private static final String GLYPH_BIOHAZARD = String.valueOf((char) 0x2623);// biohazard sign
+    private static final String GLYPH_STAR4 = String.valueOf((char) 0x2726);    // black 4-point star
+    private static final String GLYPH_CROSS = String.valueOf((char) 0x2715);    // multiplication X
+
     private static String dieFaceShort(DieFace f) {
         return switch (f) {
-            case ATTACK_1 -> "⚔ 1";
-            case ATTACK_2 -> "⚔ 2";
-            case HEALTH_POTION -> "♥ HP";
-            case ROT_POWER -> "☣ Rot";
-            case PURE_MAGIC -> "✦ Pure";
-            case STONE_SUPPRESSOR -> "✕ Stone";
+            case ATTACK_1 -> GLYPH_SWORDS + " 1";
+            case ATTACK_2 -> GLYPH_SWORDS + " 2";
+            case HEALTH_POTION -> GLYPH_HEART + " HP";
+            case ROT_POWER -> GLYPH_BIOHAZARD + " Rot";
+            case PURE_MAGIC -> GLYPH_STAR4 + " Pure";
+            case STONE_SUPPRESSOR -> GLYPH_CROSS + " Stone";
         };
     }
 
@@ -242,9 +287,48 @@ public class GameScene extends Scene {
                         () -> Main.getClient().sendPacketToServer(new UsePureMagicPacket(false))));
             }
             case RESOLVING -> {
-                Label hint = new Label("Click a die above, then pick a target.");
+                if (slabComboMode) {
+                    Label hint = new Label("Slab combo — pick 1 HEALTH_POTION (cyan) and 1 ATTACK (pink) die, then a target.");
+                    hint.setFont(Font.loadFont(Inter_Regular, 13));
+                    actionsBar.getChildren().add(hint);
+                    actionsBar.getChildren().add(actionButton("Cancel combo", () -> {
+                        slabComboMode = false;
+                        slabBeerIdx = null;
+                        slabAttackIdx = null;
+                        renderDiceTray(state);
+                        renderActions(state);
+                        renderTargetPicker(state);
+                    }));
+                } else {
+                    Label hint = new Label("Click a die above, then pick a target.");
+                    hint.setFont(Font.loadFont(Inter_Regular, 14));
+                    actionsBar.getChildren().add(hint);
+                    if (state.isSlabAbilityAvailable()) {
+                        actionsBar.getChildren().add(actionButton("Slab Combo", () -> {
+                            slabComboMode = true;
+                            slabBeerIdx = null;
+                            slabAttackIdx = null;
+                            pendingDieIndexForTarget = null;
+                            renderDiceTray(state);
+                            renderActions(state);
+                            renderTargetPicker(state);
+                        }));
+                    }
+                }
+            }
+            case AWAITING_SID_HEAL -> {
+                Label hint = new Label("Pick a player to heal +1 HP — or skip.");
                 hint.setFont(Font.loadFont(Inter_Regular, 14));
                 actionsBar.getChildren().add(hint);
+                actionsBar.getChildren().add(actionButton("Skip heal",
+                        () -> Main.getClient().sendPacketToServer(new SidHealPacket(-1, true))));
+            }
+            case AWAITING_KIT_DISCARD -> {
+                Label hint = new Label("Optionally discard 1 rot from a player.");
+                hint.setFont(Font.loadFont(Inter_Regular, 14));
+                actionsBar.getChildren().add(hint);
+                actionsBar.getChildren().add(actionButton("Skip discard",
+                        () -> Main.getClient().sendPacketToServer(new KitDiscardPacket(-1, true))));
             }
             case TURN_OVER -> actionsBar.getChildren().add(actionButton("End turn",
                     () -> Main.getClient().sendPacketToServer(new EndTurnPacket())));
@@ -271,16 +355,36 @@ public class GameScene extends Scene {
 
     private static void renderTargetPicker(GameStatePacket state) {
         targetPicker.getChildren().clear();
-        if (pendingDieIndexForTarget == null) return;
+
+        if (state.getPhase() == GameController.Phase.AWAITING_DAMAGE_RESPONSE) {
+            renderDamageResponsePicker(state);
+            return;
+        }
+
         if (state.getCurrentTurnClientId() != state.getRecipientClientId()) return;
+
+        if (state.getPhase() == GameController.Phase.AWAITING_SID_HEAL) {
+            renderSidHealPicker(state);
+            return;
+        }
+        if (state.getPhase() == GameController.Phase.AWAITING_KIT_DISCARD) {
+            renderKitDiscardPicker(state);
+            return;
+        }
         if (state.getPhase() != GameController.Phase.RESOLVING) return;
+
+        if (slabComboMode) {
+            renderSlabComboPicker(state);
+            return;
+        }
+        if (pendingDieIndexForTarget == null) return;
 
         int dieIndex = pendingDieIndexForTarget;
         if (dieIndex < 0 || dieIndex >= state.getDice().size()) return;
         GameStatePacket.DieView dv = state.getDice().get(dieIndex);
         if (dv.resolved) return;
 
-        List<Integer> validTargets = computeValidTargets(state, dv.face);
+        List<Integer> validTargets = state.getValidTargetsByDieIndex().getOrDefault(dieIndex, new ArrayList<>());
         if (validTargets.isEmpty()) {
             Label none = new Label("No valid target — pick another die.");
             none.setFont(Font.loadFont(Inter_Regular, 13));
@@ -289,7 +393,7 @@ public class GameScene extends Scene {
         }
 
         Label prompt = new Label("Pick a target for " + dieFaceShort(dv.face));
-        prompt.setFont(Font.loadFont(Inter_SemiBold, 16));
+        prompt.setFont(Font.font("Segoe UI Symbol", javafx.scene.text.FontWeight.SEMI_BOLD, 16));
         HBox row = new HBox(8);
         row.setAlignment(Pos.CENTER);
         for (int targetId : validTargets) {
@@ -314,29 +418,138 @@ public class GameScene extends Scene {
         targetPicker.getChildren().addAll(prompt, row);
     }
 
-    private static List<Integer> computeValidTargets(GameStatePacket state, DieFace face) {
-        if (face == DieFace.HEALTH_POTION) {
-            List<Integer> ids = new ArrayList<>();
-            for (GameStatePacket.PlayerView pv : state.getPlayers()) {
-                if (pv.alive) ids.add(pv.clientId);
-            }
-            return ids;
+    private static void renderSidHealPicker(GameStatePacket state) {
+        VBox panel = new VBox(6);
+        panel.setAlignment(Pos.CENTER);
+        Label prompt = new Label("Heal which player?");
+        prompt.setFont(Font.loadFont(Inter_SemiBold, 16));
+        HBox row = new HBox(8);
+        row.setAlignment(Pos.CENTER);
+        for (GameStatePacket.PlayerView pv : state.getPlayers()) {
+            if (!pv.alive) continue;
+            int targetId = pv.clientId;
+            Button b = new Button(pv.playerName);
+            b.setFont(Font.loadFont(Inter_Regular, 14));
+            b.setOnAction(e -> Main.getClient().sendPacketToServer(new SidHealPacket(targetId, false)));
+            row.getChildren().add(b);
         }
-        int distance = (face == DieFace.ATTACK_1) ? 1 : 2;
-        List<GameStatePacket.PlayerView> alive = new ArrayList<>();
-        for (GameStatePacket.PlayerView pv : state.getPlayers()) if (pv.alive) alive.add(pv);
-        alive.sort(Comparator.comparingInt(pv -> pv.position));
-        int n = alive.size();
-        if (n <= distance) return List.of();
-        int curIdx = -1;
-        for (int i = 0; i < alive.size(); i++) {
-            if (alive.get(i).clientId == state.getCurrentTurnClientId()) { curIdx = i; break; }
+        panel.getChildren().addAll(prompt, row);
+        targetPicker.getChildren().add(panel);
+    }
+
+    private static void renderKitDiscardPicker(GameStatePacket state) {
+        VBox panel = new VBox(6);
+        panel.setAlignment(Pos.CENTER);
+        Label prompt = new Label("Discard 1 rot from which player? (or skip)");
+        prompt.setFont(Font.loadFont(Inter_SemiBold, 16));
+        HBox row = new HBox(8);
+        row.setAlignment(Pos.CENTER);
+        boolean any = false;
+        for (GameStatePacket.PlayerView pv : state.getPlayers()) {
+            if (!pv.alive || pv.rotPower <= 0) continue;
+            int targetId = pv.clientId;
+            Button b = new Button(pv.playerName + " (rot " + pv.rotPower + ")");
+            b.setFont(Font.loadFont(Inter_Regular, 14));
+            b.setOnAction(e -> Main.getClient().sendPacketToServer(new KitDiscardPacket(targetId, false)));
+            row.getChildren().add(b);
+            any = true;
         }
-        if (curIdx < 0) return List.of();
-        Set<Integer> ids = new HashSet<>();
-        ids.add(alive.get((curIdx + distance) % n).clientId);
-        ids.add(alive.get(((curIdx - distance) % n + n) % n).clientId);
-        return new ArrayList<>(ids);
+        if (!any) {
+            Label none = new Label("No one has rot — use Skip.");
+            none.setFont(Font.loadFont(Inter_Regular, 13));
+            panel.getChildren().add(none);
+        } else {
+            panel.getChildren().addAll(prompt, row);
+        }
+        targetPicker.getChildren().add(panel);
+    }
+
+    private static void renderSlabComboPicker(GameStatePacket state) {
+        VBox panel = new VBox(6);
+        panel.setAlignment(Pos.CENTER);
+        Label status = new Label(
+                "Beer: " + (slabBeerIdx != null ? "die #" + slabBeerIdx : "—") +
+                "    Attack: " + (slabAttackIdx != null ? "die #" + slabAttackIdx : "—"));
+        status.setFont(Font.loadFont(Inter_SemiBold, 14));
+        panel.getChildren().add(status);
+
+        if (slabBeerIdx == null || slabAttackIdx == null) {
+            targetPicker.getChildren().add(panel);
+            return;
+        }
+
+        List<Integer> validTargets = state.getValidTargetsByDieIndex().getOrDefault(slabAttackIdx, new ArrayList<>());
+        if (validTargets.isEmpty()) {
+            Label none = new Label("No valid target for that ATTACK die — pick another.");
+            none.setFont(Font.loadFont(Inter_Regular, 13));
+            panel.getChildren().add(none);
+            targetPicker.getChildren().add(panel);
+            return;
+        }
+
+        Label prompt = new Label("Pick a target for Slab combo (deals 2 damage)");
+        prompt.setFont(Font.loadFont(Inter_SemiBold, 16));
+        HBox row = new HBox(8);
+        row.setAlignment(Pos.CENTER);
+        for (int targetId : validTargets) {
+            GameStatePacket.PlayerView pv = findById(state, targetId);
+            if (pv == null) continue;
+            int beer = slabBeerIdx;
+            int attack = slabAttackIdx;
+            Button b = new Button(pv.playerName);
+            b.setFont(Font.loadFont(Inter_Regular, 14));
+            b.setOnAction(e -> {
+                slabComboMode = false;
+                slabBeerIdx = null;
+                slabAttackIdx = null;
+                Main.getClient().sendPacketToServer(new UseSlabAbilityPacket(beer, attack, targetId));
+            });
+            row.getChildren().add(b);
+        }
+        panel.getChildren().addAll(prompt, row);
+        targetPicker.getChildren().add(panel);
+    }
+
+    private static void renderDamageResponsePicker(GameStatePacket state) {
+        VBox panel = new VBox(6);
+        panel.setAlignment(Pos.CENTER);
+        int targetId = state.getPendingDamageTargetClientId();
+        int sourceId = state.getPendingDamageSourceClientId();
+        int amount = state.getPendingDamageAmount();
+        GameStatePacket.PlayerView targetPv = findById(state, targetId);
+        GameStatePacket.PlayerView sourcePv = findById(state, sourceId);
+        String targetName = targetPv != null ? targetPv.playerName : "?";
+        String sourceName = sourcePv != null ? sourcePv.playerName : "?";
+
+        if (state.getRecipientClientId() != targetId) {
+            Label waiting = new Label("Waiting for " + targetName + " to respond to " + amount + " damage from " + sourceName + "…");
+            waiting.setFont(Font.loadFont(Inter_Regular, 14));
+            panel.getChildren().add(waiting);
+            targetPicker.getChildren().add(panel);
+            return;
+        }
+
+        Label prompt = new Label(sourceName + " is dealing " + amount + " damage to you.");
+        prompt.setFont(Font.loadFont(Inter_SemiBold, 16));
+        panel.getChildren().add(prompt);
+
+        HBox row = new HBox(8);
+        row.setAlignment(Pos.CENTER);
+        row.getChildren().add(actionButton("Take " + amount + " damage",
+                () -> Main.getClient().sendPacketToServer(
+                        new DamageResponsePacket(DamageResponsePacket.Choice.ACCEPT))));
+        if (state.isPendingDamageCanTakeRot()) {
+            row.getChildren().add(actionButton("Take 1 rot instead",
+                    () -> Main.getClient().sendPacketToServer(
+                            new DamageResponsePacket(DamageResponsePacket.Choice.TAKE_ROT))));
+        }
+        if (state.isPendingDamageCanDiscardRot()) {
+            row.getChildren().add(actionButton("Discard 1 rot to negate",
+                    () -> Main.getClient().sendPacketToServer(
+                            new DamageResponsePacket(DamageResponsePacket.Choice.DISCARD_ROT))));
+        }
+        panel.getChildren().add(row);
+        targetPicker.getChildren().add(panel);
     }
 
     // Banner ------------------------------------------------------------------

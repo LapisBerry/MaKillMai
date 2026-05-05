@@ -32,6 +32,10 @@ dependencies {
     implementation "org.openjfx:javafx-graphics:21.0.3:sources"
 }
 
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
 test {
     useJUnitPlatform()
 }

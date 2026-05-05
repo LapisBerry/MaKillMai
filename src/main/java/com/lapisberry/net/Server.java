@@ -94,6 +94,17 @@ public class Server implements Runnable {
             changed = serverGame.handleUsePureMagic(sender.getClientId(), pureMagic.isAccept());
         } else if (packet instanceof EndTurnPacket) {
             changed = serverGame.handleEndTurn(sender.getClientId());
+        } else if (packet instanceof UseSlabAbilityPacket slab) {
+            changed = serverGame.handleUseSlabAbility(sender.getClientId(),
+                    slab.getBeerDieIndex(), slab.getAttackDieIndex(), slab.getTargetClientId());
+        } else if (packet instanceof SidHealPacket sid) {
+            changed = serverGame.handleSidHeal(sender.getClientId(),
+                    sid.getTargetClientId(), sid.isSkip());
+        } else if (packet instanceof KitDiscardPacket kit) {
+            changed = serverGame.handleKitDiscard(sender.getClientId(),
+                    kit.getTargetClientId(), kit.isSkip());
+        } else if (packet instanceof DamageResponsePacket dr) {
+            changed = serverGame.handleDamageResponse(sender.getClientId(), dr.getChoice());
         }
 
         if (changed) broadcastGameState();
